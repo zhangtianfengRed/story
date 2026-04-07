@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1799be4d91c0f4283ca7f7ee567a40, type: 3}
+  m_Name: Talk8
+  m_EditorClassIdentifier: 
+  npcLines:
+  - "\u8DDF\u4F60\u804A\u7740\u5176\u5B9E\u633A\u8212\u670D\u7684\u3002"
+  choices:
+  - choiceText: "\u8C22\u8C22\u2026\u4F60\u8FD9\u4E48\u8BF4\u6211\u5B89\u5FC3\u4E86"
+    worryThoughts:
+    - "\u6211\u662F\u4E0D\u662F\u592A\u9700\u8981\u8BA4\u53EF\u4E86"
+    - "\u4F46\u6211\u771F\u7684\u677E\u4E86\u4E00\u53E3\u6C14"
+    - "\u522B\u7ACB\u523B\u63A8\u8FDB\uFF0C\u5148\u7A33\u4F4F"
+    - "\u81F3\u5C11\u4ECA\u5929\u6CA1\u641E\u7838"
+    - "\u8FD9\u6837\u8BF4\u5BF9\u5417\uFF1F"
+    nextDialogue: {fileID: 0}
+  - choiceText: "\u6211\u4E5F\u89C9\u5F97\u5F88\u8F7B\u677E\uFF0C\u548C\u4F60\u804A\u5929\u5F88\u81EA\u7136"
+    worryThoughts:
+    - "\u81EA\u7136\uFF1F\u6211\u4E00\u70B9\u90FD\u4E0D\u81EA\u7136"
+    - "\u522B\u8BA9\u5979\u770B\u51FA\u6211\u5728\u6F14"
+    - "\u5979\u8981\u662F\u8BF4\u2018\u771F\u7684\u5417\u2019\uFF0C\u6211\u600E\u4E48\u529E\uFF1F"
+    - "\u6F14\u4E0B\u53BB\uFF0C\u522B\u5D29"
+    - "\u8FD9\u6837\u8BF4\u5BF9\u5417\uFF1F"
+    nextDialogue: {fileID: 0}
+  isEndingScene: 1

@@ -1,0 +1,45 @@
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Uu]ser[Ss]ettings/
+
+# Addressables / generated assets
+Assets/AddressableAssetsData/*/*.bin*
+
+# IDE / OS files
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity auto-generated files
+sysinfo.txt
+*.apk
+*.aab
+*.unitypackage
+
+# Crash / profiling data
+crashlytics-build.properties
+report.xml
+
