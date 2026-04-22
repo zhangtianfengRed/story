@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
 /// 平面实时镜子。挂在镜面 Quad 上，会用反射相机把主相机画面反射后渲染到镜面材质。
@@ -19,8 +22,6 @@ public class PlanarMirror : MonoBehaviour
     public Camera reflectionCamera;
 
     [Header("反射设置")]
-    [Tooltip("开启后每帧主动渲染镜面贴图，不依赖 OnWillRenderObject 触发。")]
-    public bool renderEveryFrame = true;
     [Tooltip("反射贴图分辨率。数值越高越清晰，但性能消耗越大。")]
     public int textureSize = 1024;
     [Tooltip("自动让反射贴图宽高比匹配镜面 Quad，避免画面被拉伸。")]
@@ -78,10 +79,12 @@ public class PlanarMirror : MonoBehaviour
         }
 
         EnsureReflectionCameraReference();
+        RegisterEditorUpdate();
     }
 
     private void OnDisable()
     {
+        UnregisterEditorUpdate();
         ReleaseResources();
     }
 
@@ -92,28 +95,19 @@ public class PlanarMirror : MonoBehaviour
         clipPlaneOffset = Mathf.Max(0.001f, clipPlaneOffset);
     }
 
-    private void OnWillRenderObject()
-    {
-        if ((Application.isPlaying && renderEveryFrame) ||
-            !enabled ||
-            mirrorRenderer == null ||
-            isRenderingReflection)
-        {
-            return;
-        }
-
-        Camera renderCamera = sourceCamera != null ? sourceCamera : Camera.current;
-        if (renderCamera == null || renderCamera == reflectionCamera)
-        {
-            return;
-        }
-
-        RenderMirror(renderCamera);
-    }
-
     private void LateUpdate()
     {
-        if (!renderEveryFrame || !enabled || mirrorRenderer == null || isRenderingReflection)
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
+        TryRenderMirror();
+    }
+
+    private void TryRenderMirror()
+    {
+        if (!enabled || mirrorRenderer == null || isRenderingReflection)
         {
             return;
         }
@@ -126,6 +120,37 @@ public class PlanarMirror : MonoBehaviour
 
         RenderMirror(renderCamera);
     }
+
+#if UNITY_EDITOR
+    private void RegisterEditorUpdate()
+    {
+        EditorApplication.update -= EditorTick;
+        EditorApplication.update += EditorTick;
+    }
+
+    private void UnregisterEditorUpdate()
+    {
+        EditorApplication.update -= EditorTick;
+    }
+
+    private void EditorTick()
+    {
+        if (Application.isPlaying || this == null)
+        {
+            return;
+        }
+
+        TryRenderMirror();
+    }
+#else
+    private void RegisterEditorUpdate()
+    {
+    }
+
+    private void UnregisterEditorUpdate()
+    {
+    }
+#endif
 
     private void RenderMirror(Camera renderCamera)
     {

@@ -15,7 +15,7 @@ Material:
   - DR_VERTEX_COLORS_ON
   - _CELPRIMARYMODE_STEPS
   - _TEXTUREBLENDINGMODE_MULTIPLY
-  - _UNITYSHADOWMODE_MULTIPLY
+  - _UNITYSHADOWMODE_COLOR
   m_InvalidKeywords:
   - _
   - _EMISSIVE_SIMPLE
@@ -472,7 +472,7 @@ Material:
     - _UVDetail: 0
     - _UVEmissive: 0
     - _UVSec: 0
-    - _UnityShadowMode: 1
+    - _UnityShadowMode: 2
     - _UnityShadowPower: 1
     - _UnityShadowSharpness: 10
     - _Unlit_Intensity: 1
