@@ -34,7 +34,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Brightness: 1
-    - _UseProjectedUV: 0
+    - _UseProjectedUV: 1
     m_Colors:
     - _Tint: {r: 0.92, g: 0.97, b: 1, a: 1}
   m_BuildTextureStacks: []

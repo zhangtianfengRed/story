@@ -77,7 +77,7 @@ MonoBehaviour:
     value: 0.432
   smoothness:
     overrideState: 1
-    value: 1
+    value: 0.846
   roundness:
     overrideState: 1
     value: 0.922

@@ -6,7 +6,7 @@ Shader "Custom/Mirror/PlanarReflection"
         _ReflectionTex ("Reflection Texture", 2D) = "black" {}
         _Tint ("Tint", Color) = (0.92, 0.97, 1, 1)
         _Brightness ("Brightness", Range(0.1, 2)) = 1
-        _UseProjectedUV ("Use Projected UV", Range(0, 1)) = 0
+        _UseProjectedUV ("Use Projected UV", Range(0, 1)) = 1
     }
 
     SubShader

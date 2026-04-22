@@ -24,7 +24,7 @@ public class PlanarMirror : MonoBehaviour
     [Header("反射设置")]
     [Tooltip("反射贴图分辨率。数值越高越清晰，但性能消耗越大。")]
     public int textureSize = 1024;
-    [Tooltip("自动让反射贴图宽高比匹配镜面 Quad，避免画面被拉伸。")]
+    [Tooltip("自动让反射贴图宽高比匹配镜面 Quad，只影响反射贴图采样清晰度，不改变镜中透视。")]
     public bool matchTextureAspectToMirror = true;
     [Tooltip("关闭自动匹配时使用的反射贴图宽高比。")]
     public float manualTextureAspect = 1.777778f;
@@ -70,6 +70,7 @@ public class PlanarMirror : MonoBehaviour
     private static readonly int MirrorViewProjectionId = Shader.PropertyToID("_MirrorVP");
     private static readonly int TintId = Shader.PropertyToID("_Tint");
     private static readonly int BrightnessId = Shader.PropertyToID("_Brightness");
+    private static readonly int UseProjectedUvId = Shader.PropertyToID("_UseProjectedUV");
 
     private void OnEnable()
     {
@@ -95,24 +96,31 @@ public class PlanarMirror : MonoBehaviour
         clipPlaneOffset = Mathf.Max(0.001f, clipPlaneOffset);
     }
 
-    private void LateUpdate()
+    private void OnWillRenderObject()
     {
-        if (!Application.isPlaying)
+        Camera currentCamera = Camera.current;
+        if (currentCamera == null)
         {
             return;
         }
 
-        TryRenderMirror();
+        Camera renderCamera = sourceCamera != null ? sourceCamera : currentCamera;
+        TryRenderMirror(renderCamera);
     }
 
     private void TryRenderMirror()
+    {
+        Camera renderCamera = sourceCamera != null ? sourceCamera : Camera.main;
+        TryRenderMirror(renderCamera);
+    }
+
+    private void TryRenderMirror(Camera renderCamera)
     {
         if (!enabled || mirrorRenderer == null || isRenderingReflection)
         {
             return;
         }
 
-        Camera renderCamera = sourceCamera != null ? sourceCamera : Camera.main;
         if (renderCamera == null || renderCamera == reflectionCamera)
         {
             return;
@@ -177,15 +185,20 @@ public class PlanarMirror : MonoBehaviour
 
         reflectionCamera.enabled = false;
         reflectionCamera.targetTexture = reflectionTexture;
-        reflectionCamera.aspect = GetReflectionTextureAspect();
+        if (copySourceCameraSettings)
+        {
+            // Keep the reflected frustum identical to the viewer camera; texture aspect only affects sampling density.
+            reflectionCamera.aspect = renderCamera.aspect;
+        }
         reflectionCamera.cullingMask = reflectionMask;
         reflectionCamera.useOcclusionCulling = false;
 
+        // Reflect around the real mirror plane. The offset is applied only to the oblique clip plane below.
         Vector4 reflectionPlane = new Vector4(
             mirrorNormal.x,
             mirrorNormal.y,
             mirrorNormal.z,
-            -Vector3.Dot(mirrorNormal, mirrorPosition) - clipPlaneOffset
+            -Vector3.Dot(mirrorNormal, mirrorPosition)
         );
 
         Matrix4x4 reflectionMatrix = Matrix4x4.zero;
@@ -422,6 +435,7 @@ public class PlanarMirror : MonoBehaviour
         propertyBlock.SetMatrix(MirrorViewProjectionId, mirrorViewProjection);
         propertyBlock.SetColor(TintId, tint);
         propertyBlock.SetFloat(BrightnessId, brightness);
+        propertyBlock.SetFloat(UseProjectedUvId, 1f);
         mirrorRenderer.SetPropertyBlock(propertyBlock);
 
         Material material = mirrorRenderer.sharedMaterial;
@@ -432,6 +446,7 @@ public class PlanarMirror : MonoBehaviour
             material.SetMatrix(MirrorViewProjectionId, mirrorViewProjection);
             material.SetColor(TintId, tint);
             material.SetFloat(BrightnessId, brightness);
+            material.SetFloat(UseProjectedUvId, 1f);
         }
     }
 
