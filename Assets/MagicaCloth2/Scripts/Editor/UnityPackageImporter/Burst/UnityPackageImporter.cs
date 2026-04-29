@@ -15,10 +15,8 @@ namespace MagicaCloth2UPMImporterBurst
     {
         static UnityPackageImporter()
         {
-            Install("com.unity.burst");
-            Install("com.unity.mathematics");
-            Install("com.unity.collections");
-            //Install("com.unity.burst@1.4.11");
+            // This project already declares these dependencies in Packages/manifest.json.
+            // Avoid blocking editor startup by issuing synchronous Package Manager calls here.
         }
 
         public static bool Install(string id)

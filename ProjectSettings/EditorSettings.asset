@@ -19,7 +19,7 @@ EditorSettings:
   m_ProjectGenerationIncludedExtensions: txt;xml;fnt;cd;asmdef;rsp;asmref
   m_ProjectGenerationRootNamespace: 
   m_CollabEditorSettings:
-    inProgressEnabled: 1
+    inProgressEnabled: 0
   m_EnableTextureStreamingInEditMode: 1
   m_EnableTextureStreamingInPlayMode: 1
   m_AsyncShaderCompilation: 1

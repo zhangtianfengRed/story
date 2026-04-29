@@ -15,7 +15,8 @@ namespace MagicaCloth2UPMImporterCollections
     {
         static UnityPackageImporter()
         {
-            Install("com.unity.shadergraph");
+            // This project already declares this dependency in Packages/manifest.json.
+            // Avoid blocking editor startup by issuing synchronous Package Manager calls here.
         }
 
         public static bool Install(string id)

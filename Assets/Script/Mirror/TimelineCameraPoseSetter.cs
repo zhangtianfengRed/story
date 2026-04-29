@@ -20,6 +20,10 @@ public class TimelineCameraPoseSetter : MonoBehaviour
     public Transform targetCamera;
     public bool useMainCameraIfEmpty = true;
 
+    [Header("Animation Driver")]
+    public Transform animationDriverTransform;
+    public bool useTargetCameraAsAnimationDriver = true;
+
     [Header("Single Pose")]
     public bool useLocalSpace;
     public Vector3 position;
@@ -33,6 +37,14 @@ public class TimelineCameraPoseSetter : MonoBehaviour
     public bool disableAnimatorAfterApply;
     public Animator animatorToDisable;
     public bool clearAnimatorControllerWhenEnabling = true;
+    public bool cleanupAnimatorStateBeforeEnable = true;
+
+    [Header("Isolated Camera Shots")]
+    public TimelineShotPlayer isolatedShotPlayer;
+    public bool autoPlayAssignedShotOnDisableAnimatorApply;
+    public bool suppressAnimatorEnableWhileShotDirectorPlays = true;
+    public bool stopIsolatedShotWhenHoldingPose = true;
+    public int[] poseShotIndices;
 
     private Coroutine enableAnimatorRoutine;
     private RuntimeAnimatorController cachedAnimatorController;
@@ -133,6 +145,7 @@ public class TimelineCameraPoseSetter : MonoBehaviour
         disableAnimatorAfterApply = true;
         ApplyPoseByIndex(poseIndex);
         disableAnimatorAfterApply = previousDisableAnimator;
+        TryPlayAssignedShot(poseIndex);
     }
 
     public void ApplyPoseByIndexAndEnableAnimatorNextFrame(int poseIndex)
@@ -200,6 +213,11 @@ public class TimelineCameraPoseSetter : MonoBehaviour
 
     public void EnableAnimator()
     {
+        if (ShouldSuppressAnimatorEnable())
+        {
+            return;
+        }
+
         if (enableAnimatorRoutine != null)
         {
             StopCoroutine(enableAnimatorRoutine);
@@ -209,6 +227,11 @@ public class TimelineCameraPoseSetter : MonoBehaviour
         ResolveAnimator();
         if (animatorToDisable != null)
         {
+            if (cleanupAnimatorStateBeforeEnable)
+            {
+                CleanupAnimationStateInternal();
+            }
+
             ClearAnimatorControllerForTimeline();
             animatorToDisable.enabled = true;
         }
@@ -343,6 +366,8 @@ public class TimelineCameraPoseSetter : MonoBehaviour
             }
         }
 
+        ResetAnimationDriverLocalOffset();
+
         Quaternion targetRotation = Quaternion.Euler(targetEulerAngles);
         if (targetUsesLocalSpace)
         {
@@ -380,17 +405,26 @@ public class TimelineCameraPoseSetter : MonoBehaviour
     public void HoldCurrentPoseAndDisableAnimator()
     {
         ResolveTargetCamera();
-        if (targetCamera == null)
+        ResolveAnimationDriverTransform();
+
+        Transform poseSource = animationDriverTransform != null ? animationDriverTransform : targetCamera;
+        if (targetCamera == null || poseSource == null)
         {
             Debug.LogWarning($"[{nameof(TimelineCameraPoseSetter)}] Missing target camera transform on {name}.", this);
             return;
         }
 
-        Vector3 currentPosition = targetCamera.position;
-        Quaternion currentRotation = targetCamera.rotation;
+        Vector3 currentPosition = poseSource.position;
+        Quaternion currentRotation = poseSource.rotation;
+
+        if (stopIsolatedShotWhenHoldingPose && isolatedShotPlayer != null)
+        {
+            isolatedShotPlayer.StopActiveShot();
+        }
 
         DisableAnimator();
         targetCamera.SetPositionAndRotation(currentPosition, currentRotation);
+        ResetAnimationDriverLocalOffset();
     }
 
     public void HoldCurrentPoseAndDisableAnimatorNextFrame()
@@ -404,10 +438,60 @@ public class TimelineCameraPoseSetter : MonoBehaviour
         StartCoroutine(HoldCurrentPoseAndDisableAnimatorNextFrameRoutine());
     }
 
+    public void CleanupAnimationState()
+    {
+        CleanupAnimationStateInternal();
+    }
+
+    public void CleanupAnimationStateNextFrame()
+    {
+        if (!Application.isPlaying)
+        {
+            CleanupAnimationStateInternal();
+            return;
+        }
+
+        StartCoroutine(CleanupAnimationStateNextFrameRoutine());
+    }
+
     private IEnumerator HoldCurrentPoseAndDisableAnimatorNextFrameRoutine()
     {
         yield return null;
         HoldCurrentPoseAndDisableAnimator();
+    }
+
+    private IEnumerator CleanupAnimationStateNextFrameRoutine()
+    {
+        yield return null;
+        CleanupAnimationStateInternal();
+    }
+
+    private void TryPlayAssignedShot(int poseIndex)
+    {
+        if (!autoPlayAssignedShotOnDisableAnimatorApply || isolatedShotPlayer == null || poseShotIndices == null)
+        {
+            return;
+        }
+
+        if (poseIndex < 0 || poseIndex >= poseShotIndices.Length)
+        {
+            return;
+        }
+
+        int shotIndex = poseShotIndices[poseIndex];
+        if (shotIndex < 0)
+        {
+            return;
+        }
+
+        isolatedShotPlayer.PlayShotByIndex(shotIndex);
+    }
+
+    private bool ShouldSuppressAnimatorEnable()
+    {
+        return suppressAnimatorEnableWhileShotDirectorPlays
+            && isolatedShotPlayer != null
+            && isolatedShotPlayer.IsPlaying;
     }
 
     private void ResolveTargetCamera()
@@ -418,12 +502,23 @@ public class TimelineCameraPoseSetter : MonoBehaviour
         }
     }
 
-    private void ResolveAnimator()
+    private void ResolveAnimationDriverTransform()
     {
         ResolveTargetCamera();
-        if (animatorToDisable == null && targetCamera != null)
+        if (animationDriverTransform == null && useTargetCameraAsAnimationDriver)
         {
-            animatorToDisable = targetCamera.GetComponent<Animator>();
+            animationDriverTransform = targetCamera;
+        }
+    }
+
+    private void ResolveAnimator()
+    {
+        ResolveAnimationDriverTransform();
+
+        Transform animatorTransform = animationDriverTransform != null ? animationDriverTransform : targetCamera;
+        if (animatorToDisable == null && animatorTransform != null)
+        {
+            animatorToDisable = animatorTransform.GetComponent<Animator>();
         }
 
         if (animatorToDisable != null && !hasCachedAnimatorController)
@@ -431,5 +526,50 @@ public class TimelineCameraPoseSetter : MonoBehaviour
             cachedAnimatorController = animatorToDisable.runtimeAnimatorController;
             hasCachedAnimatorController = true;
         }
+    }
+
+    private void ResetAnimationDriverLocalOffset()
+    {
+        ResolveTargetCamera();
+        ResolveAnimationDriverTransform();
+
+        if (targetCamera == null || animationDriverTransform == null || animationDriverTransform == targetCamera)
+        {
+            return;
+        }
+
+        if (animationDriverTransform.parent != targetCamera)
+        {
+            return;
+        }
+
+        animationDriverTransform.localPosition = Vector3.zero;
+        animationDriverTransform.localRotation = Quaternion.identity;
+    }
+
+    private void CleanupAnimationStateInternal()
+    {
+        ResolveTargetCamera();
+        ResolveAnimationDriverTransform();
+        ResolveAnimator();
+
+        Transform poseSource = animationDriverTransform != null ? animationDriverTransform : targetCamera;
+        if (targetCamera == null || poseSource == null)
+        {
+            return;
+        }
+
+        Vector3 currentPosition = poseSource.position;
+        Quaternion currentRotation = poseSource.rotation;
+
+        if (animatorToDisable != null)
+        {
+            animatorToDisable.enabled = false;
+            animatorToDisable.Rebind();
+            animatorToDisable.Update(0f);
+        }
+
+        targetCamera.SetPositionAndRotation(currentPosition, currentRotation);
+        ResetAnimationDriverLocalOffset();
     }
 }
