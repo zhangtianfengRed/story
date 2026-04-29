@@ -10,6 +10,7 @@ public class TimelineCameraPoseSetter : MonoBehaviour
     public struct CameraPose
     {
         public string name;
+        public string isolatedShotName;
         public bool useLocalSpace;
         public Vector3 position;
         public Vector3 eulerAngles;
@@ -468,12 +469,19 @@ public class TimelineCameraPoseSetter : MonoBehaviour
 
     private void TryPlayAssignedShot(int poseIndex)
     {
-        if (!autoPlayAssignedShotOnDisableAnimatorApply || isolatedShotPlayer == null || poseShotIndices == null)
+        if (!autoPlayAssignedShotOnDisableAnimatorApply || isolatedShotPlayer == null || poses == null || poseIndex < 0 || poseIndex >= poses.Length)
         {
             return;
         }
 
-        if (poseIndex < 0 || poseIndex >= poseShotIndices.Length)
+        CameraPose pose = poses[poseIndex];
+        if (!string.IsNullOrEmpty(pose.isolatedShotName))
+        {
+            isolatedShotPlayer.PlayShotByName(pose.isolatedShotName);
+            return;
+        }
+
+        if (poseShotIndices == null || poseIndex >= poseShotIndices.Length)
         {
             return;
         }

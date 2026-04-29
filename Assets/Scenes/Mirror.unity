@@ -456,16 +456,19 @@ MonoBehaviour:
   eulerAngles: {x: 8.560002, y: 0, z: 0}
   poses:
   - name: "\u5168\u5C4B\u5B50\u659C\u5411\u89C6\u89D2"
+    isolatedShotName: 
     useLocalSpace: 0
     position: {x: 12.545, y: 2.26, z: 0.79}
     eulerAngles: {x: 20.57, y: 329, z: 0}
     disableAnimatorAfterApply: 0
   - name: "\u89D2\u8272\u8111\u888B\u540E"
+    isolatedShotName: BehindHeadMove
     useLocalSpace: 0
     position: {x: 10.96, y: 1.594, z: 1.496}
     eulerAngles: {x: 8.560002, y: 0, z: 0}
     disableAnimatorAfterApply: 0
   - name: "\u4FA7\u8EAB"
+    isolatedShotName: SideBodyUp
     useLocalSpace: 0
     position: {x: 12.738, y: 0.707, z: 1.967}
     eulerAngles: {x: 0, y: 266.24002, z: 0}
@@ -481,8 +484,8 @@ MonoBehaviour:
   stopIsolatedShotWhenHoldingPose: 1
   poseShotIndices:
   - -1
-  - 1
-  - 0
+  - -1
+  - -1
 --- !u!4 &182797761
 Transform:
   m_ObjectHideFlags: 0
@@ -2358,11 +2361,11 @@ MonoBehaviour:
   - trackName: Animation Track
     bindingTarget: {fileID: 1136385245}
   shots:
-  - shotName: SideBodyUp
-    timeline: {fileID: 11400000, guid: 8afb2b0f904a2f34daa71b66a0b96210, type: 2}
-    startTime: 0
   - shotName: BehindHeadMove
     timeline: {fileID: 11400000, guid: f7ea31fb57e64383b898c4d84791f087, type: 2}
+    startTime: 0
+  - shotName: SideBodyUp
+    timeline: {fileID: 11400000, guid: 8afb2b0f904a2f34daa71b66a0b96210, type: 2}
     startTime: 0
 --- !u!320 &568237207
 PlayableDirector:
