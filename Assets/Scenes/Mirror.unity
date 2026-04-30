@@ -482,10 +482,7 @@ MonoBehaviour:
   autoPlayAssignedShotOnDisableAnimatorApply: 1
   suppressAnimatorEnableWhileShotDirectorPlays: 1
   stopIsolatedShotWhenHoldingPose: 1
-  poseShotIndices:
-  - -1
-  - -1
-  - -1
+  poseShotIndices: ffffffffffffffffffffffff
 --- !u!4 &182797761
 Transform:
   m_ObjectHideFlags: 0
@@ -6259,7 +6256,7 @@ Animator:
   m_GameObject: {fileID: 1136385240}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d03cd3fbd36a65543a98ca3f01676f91, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -6871,7 +6868,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.02e-43, y: 3e-45, z: 3.859e-42, w: 5.142788e-39}
+  m_BoundingSphereOverride: {x: 8.45e-43, y: 4.405447e-39, z: 8.45e-43, w: 7.34684e-40}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -8183,7 +8180,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.18e-43, y: 2.07e-43, z: 1.19e-43, w: 2.09e-43}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -9668,7 +9665,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 5000
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &2147400203
 MonoBehaviour:
