@@ -18,14 +18,26 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
     [Header("Animation")]
     [Tooltip("Keep movement controlled by this script instead of animation root motion.")]
     public bool disableAnimatorRootMotion = true;
+    [Tooltip("不指定时会自动查找当前对象或子对象上的 Animator。")]
+    public Animator targetAnimator;
 
     private CharacterController characterController;
     private Animator characterAnimator;
+    private static readonly int WalkParameter = Animator.StringToHash("Walk");
+    private bool hasWalkState;
+    private bool currentWalkState;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        characterAnimator = GetComponent<Animator>();
+        characterAnimator = targetAnimator != null
+            ? targetAnimator
+            : GetComponent<Animator>();
+
+        if (characterAnimator == null)
+        {
+            characterAnimator = GetComponentInChildren<Animator>();
+        }
 
         if (disableAnimatorRootMotion && characterAnimator != null)
         {
@@ -41,9 +53,18 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
     private void Update()
     {
         Vector3 moveDirection = GetWorldMoveDirection();
+        bool isMoving = moveDirection.sqrMagnitude > 0.0001f;
+
         characterController.SimpleMove(moveDirection * moveSpeed);
 
-        if (rotateToMoveDirection && moveDirection.sqrMagnitude > 0.0001f)
+        if (characterAnimator != null && (!hasWalkState || currentWalkState != isMoving))
+        {
+            characterAnimator.SetBool(WalkParameter, isMoving);
+            currentWalkState = isMoving;
+            hasWalkState = true;
+        }
+
+        if (rotateToMoveDirection && isMoving)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
             transform.rotation = Quaternion.Slerp(
