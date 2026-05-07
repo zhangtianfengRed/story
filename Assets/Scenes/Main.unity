@@ -16324,7 +16324,7 @@ MonoBehaviour:
   ensureGameFlowManager: 1
   ensureSceneTransitionController: 1
   gameFlowDefinition: {fileID: 11400000, guid: bb4774c0b311a6a48bfae2318f77a96a, type: 2}
-  transitionColor: {r: 1, g: 0, b: 0, a: 1}
+  transitionColor: {r: 0, g: 0, b: 0, a: 1}
   transitionFadeOutDuration: 0.3
   transitionHoldDuration: 0.5
   transitionFadeInDuration: 1.2
