@@ -16324,10 +16324,10 @@ MonoBehaviour:
   ensureGameFlowManager: 1
   ensureSceneTransitionController: 1
   gameFlowDefinition: {fileID: 11400000, guid: bb4774c0b311a6a48bfae2318f77a96a, type: 2}
-  transitionColor: {r: 0, g: 0, b: 0, a: 1}
-  transitionFadeOutDuration: 0.5
-  transitionHoldDuration: 0.3
-  transitionFadeInDuration: 0.5
+  transitionColor: {r: 1, g: 0, b: 0, a: 1}
+  transitionFadeOutDuration: 0.3
+  transitionHoldDuration: 0.5
+  transitionFadeInDuration: 1.2
   transitionSortingOrder: 5000
   transitionUseUnscaledTime: 1
   transitionBlockInputWhileVisible: 1
@@ -18231,7 +18231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: d2f4d50d461df354493d1dbcb202ef0b, type: 2}
+  sharedProfile: {fileID: 11400000, guid: bb7288c3cf820894c8e8d7df99021931, type: 2}
   isGlobal: 1
   blendDistance: 0
   weight: 1

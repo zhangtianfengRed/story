@@ -17,7 +17,7 @@ public class SceneTransitionController : MonoBehaviour
     [SerializeField] private float fadeOutDuration = 0.35f;
     [SerializeField] private float holdDuration = 0.05f;
     [SerializeField] private float fadeInDuration = 0.35f;
-    [SerializeField] private int sortingOrder = 5000;
+    [SerializeField] private int sortingOrder = 30000;
     [SerializeField] private bool useUnscaledTime = true;
     [SerializeField] private bool blockInputWhileVisible = true;
 
@@ -86,6 +86,7 @@ public class SceneTransitionController : MonoBehaviour
             return;
         }
 
+        Debug.Log($"[{nameof(SceneTransitionController)}] Start global transition to scene: {sceneName}");
         transitionCoroutine = StartCoroutine(LoadSceneRoutine(sceneName));
     }
 
@@ -161,14 +162,19 @@ public class SceneTransitionController : MonoBehaviour
             yield return null;
         }
 
+        Debug.Log($"[{nameof(SceneTransitionController)}] Scene loaded behind overlay: {sceneName}");
+
         if (TryHandleSceneAdapter(sceneName))
         {
+            Debug.Log($"[{nameof(SceneTransitionController)}] Scene adapter took over fade in: {sceneName}");
             transitionCoroutine = null;
             yield break;
         }
 
         yield return null;
+        Debug.Log($"[{nameof(SceneTransitionController)}] Fade in from global overlay: {sceneName}");
         yield return FadeRoutine(0f, fadeInDuration);
+        Debug.Log($"[{nameof(SceneTransitionController)}] Fade in complete: {sceneName}");
 
         transitionCoroutine = null;
     }
@@ -224,6 +230,7 @@ public class SceneTransitionController : MonoBehaviour
         }
 
         overlayCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        overlayCanvas.overrideSorting = true;
         overlayCanvas.sortingOrder = sortingOrder;
 
         if (graphicRaycaster == null)

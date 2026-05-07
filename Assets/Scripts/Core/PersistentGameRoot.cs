@@ -20,7 +20,7 @@ public class PersistentGameRoot : MonoBehaviour
     [SerializeField] private float transitionFadeOutDuration = 0.35f;
     [SerializeField] private float transitionHoldDuration = 0.05f;
     [SerializeField] private float transitionFadeInDuration = 0.35f;
-    [SerializeField] private int transitionSortingOrder = 5000;
+    [SerializeField] private int transitionSortingOrder = 30000;
     [SerializeField] private bool transitionUseUnscaledTime = true;
     [SerializeField] private bool transitionBlockInputWhileVisible = true;
 

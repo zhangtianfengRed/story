@@ -31,6 +31,8 @@ public class RoomInteractable : MonoBehaviour
 
     [Header("Prompt")]
     public string promptText = "按下 {key} 进行交互";
+    public Transform promptAnchor;
+    public Vector3 promptWorldOffset = new Vector3(0f, 1.5f, 0f);
 
     [Header("Highlight")]
     public RoomInteractableHighlight highlightController;
@@ -73,6 +75,15 @@ public class RoomInteractable : MonoBehaviour
     public Vector3 DetectionCenterPosition
     {
         get { return detectionCenter != null ? detectionCenter.position : transform.position; }
+    }
+
+    public Vector3 PromptWorldPosition
+    {
+        get
+        {
+            Transform anchor = promptAnchor != null ? promptAnchor : transform;
+            return anchor.position + promptWorldOffset;
+        }
     }
 
     private void Awake()

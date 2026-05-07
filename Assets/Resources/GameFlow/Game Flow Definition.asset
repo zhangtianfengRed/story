@@ -17,5 +17,10 @@ MonoBehaviour:
   - stepId: Intro_Mirror
     sceneName: Mirror
     contentKey: IntroTimeline
-    nextStepId: Room_FirstVisit
+    nextStepId: Room
+    notes: 
+  - stepId: Room
+    sceneName: room
+    contentKey: IntroRoom
+    nextStepId: office_FirstVisit
     notes: 

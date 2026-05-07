@@ -2146,6 +2146,8 @@ GameObject:
   - component: {fileID: 568237205}
   - component: {fileID: 568237206}
   - component: {fileID: 568237207}
+  - component: {fileID: 568237208}
+  - component: {fileID: 568237209}
   m_Layer: 0
   m_Name: TimeLine
   m_TagString: Untagged
@@ -2197,6 +2199,8 @@ PlayableDirector:
     value: {fileID: 1525335331}
   - key: {fileID: 4431555705884920877, guid: 91f67c1f4b624b8fb48b99bb8b8b53d0, type: 2}
     value: {fileID: 1359572943}
+  - key: {fileID: -7903852368142189620, guid: 91f67c1f4b624b8fb48b99bb8b8b53d0, type: 2}
+    value: {fileID: 568237209}
   m_ExposedReferences:
     m_References: []
 --- !u!114 &568237205
@@ -2381,6 +2385,53 @@ PlayableDirector:
   m_SceneBindings: []
   m_ExposedReferences:
     m_References: []
+--- !u!114 &568237208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568237202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2efbfb3aee08bd4bbe3be7f0a9f7cbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  applyOnStart: 1
+  onlyApplyWhenCurrentSceneMatchesStepScene: 1
+  useFallbackContentKeyWhenFlowUnavailable: 1
+  fallbackContentKey: Default
+  contents: []
+--- !u!114 &568237209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568237202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: ce2e49056e9ca3b49b40db5beac592e5, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 568237208}
+          m_TargetAssemblyTypeName: GameFlowSceneController, Assembly-CSharp
+          m_MethodName: CompleteCurrentStepAndLoadNext
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &584490008
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6868,7 +6919,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 8.45e-43, y: 4.405447e-39, z: 8.45e-43, w: 7.34684e-40}
+  m_BoundingSphereOverride: {x: 0, y: -1.3637868e+30, z: 5.76e-43, w: -1.8049408e+30}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -8180,7 +8231,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: -1.3637868e+30, z: 5.76e-43, w: -1.1124535e+31}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

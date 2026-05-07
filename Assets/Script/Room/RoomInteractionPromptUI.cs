@@ -9,8 +9,16 @@ public class RoomInteractionPromptUI : MonoBehaviour
     public TMP_Text promptText;
     public Text legacyPromptText;
 
+    [Header("World Follow")]
+    public bool followInteractableInWorld = true;
+    public bool faceCamera = true;
+    public Camera targetCamera;
+    public bool autoFindCamera = true;
+
     [Header("Initial State")]
     public bool hideOnAwake = true;
+
+    private RoomInteractable currentInteractable;
 
     private void Awake()
     {
@@ -29,10 +37,17 @@ public class RoomInteractionPromptUI : MonoBehaviour
             legacyPromptText = GetComponentInChildren<Text>(true);
         }
 
+        EnsureCamera();
+
         if (hideOnAwake)
         {
             Hide();
         }
+    }
+
+    private void LateUpdate()
+    {
+        UpdateWorldTransform();
     }
 
     public void Show(RoomInteractable interactable, KeyCode key)
@@ -43,13 +58,52 @@ public class RoomInteractionPromptUI : MonoBehaviour
             return;
         }
 
+        currentInteractable = interactable;
         SetText(interactable.GetPromptText(key));
+        UpdateWorldTransform();
         SetVisible(true);
     }
 
     public void Hide()
     {
+        currentInteractable = null;
         SetVisible(false);
+    }
+
+    private void UpdateWorldTransform()
+    {
+        if (!followInteractableInWorld || currentInteractable == null)
+        {
+            return;
+        }
+
+        transform.position = currentInteractable.PromptWorldPosition;
+
+        if (!faceCamera)
+        {
+            return;
+        }
+
+        EnsureCamera();
+
+        if (targetCamera == null)
+        {
+            return;
+        }
+
+        Vector3 directionToCamera = transform.position - targetCamera.transform.position;
+        if (directionToCamera.sqrMagnitude > 0.0001f)
+        {
+            transform.rotation = Quaternion.LookRotation(directionToCamera, Vector3.up);
+        }
+    }
+
+    private void EnsureCamera()
+    {
+        if (targetCamera == null && autoFindCamera)
+        {
+            targetCamera = Camera.main;
+        }
     }
 
     private void SetText(string text)
