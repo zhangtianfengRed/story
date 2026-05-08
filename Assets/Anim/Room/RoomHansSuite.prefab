@@ -318,11 +318,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 4
+  groundedVerticalSpeed: -2
   movementCamera: {fileID: 0}
   rotateToMoveDirection: 1
   rotationSpeed: 12
   disableAnimatorRootMotion: 1
   targetAnimator: {fileID: 1955445104781376426}
+  footstepAudioSource: {fileID: 0}
+  leftFootstepClip: {fileID: 8300000, guid: d90d6f81b8aaf0f4d9b99eb72ecc7ae5, type: 3}
+  rightFootstepClip: {fileID: 8300000, guid: 40e1062aa3f45fb4e8213ed6ed1aec4e, type: 3}
+  footstepInterval: 0.6
+  footstepVolume: 0.75
+  footstepVolumeRange: {x: 0.82, y: 1}
+  footstepPitchRange: {x: 0.92, y: 1.06}
+  playFootstepImmediately: 1
 --- !u!1 &2121169876197011610
 GameObject:
   m_ObjectHideFlags: 0

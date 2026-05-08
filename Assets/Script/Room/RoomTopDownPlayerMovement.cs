@@ -25,11 +25,28 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
     [Tooltip("不指定时会自动查找当前对象或子对象上的 Animator。")]
     public Animator targetAnimator;
 
+    [Header("Footsteps")]
+    [Tooltip("播放移动脚步声的 AudioSource。不指定时会自动使用或创建当前对象上的 AudioSource。")]
+    public AudioSource footstepAudioSource;
+    public AudioClip leftFootstepClip;
+    public AudioClip rightFootstepClip;
+    [Min(0.05f)]
+    public float footstepInterval = 0.42f;
+    [HideInInspector]
+    public float footstepVolume = 0.75f;
+    public Vector2 footstepVolumeRange = new Vector2(0.82f, 1f);
+    public Vector2 footstepPitchRange = new Vector2(0.92f, 1.06f);
+    [Tooltip("移动开始时是否立刻播放第一下脚步声。")]
+    public bool playFootstepImmediately = true;
+
     private CharacterController characterController;
     private Animator characterAnimator;
     private static readonly int WalkParameter = Animator.StringToHash("Walk");
     private const float MoveThreshold = 0.0001f;
     private float verticalSpeed;
+    private float footstepTimer;
+    private bool playLeftFootstepNext = true;
+    private bool wasPlayingFootsteps;
     private bool moveForwardPressed;
     private bool moveBackwardPressed;
     private bool moveRightPressed;
@@ -69,6 +86,26 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
         {
             movementCamera = Camera.main;
         }
+
+        if (footstepAudioSource == null)
+        {
+            footstepAudioSource = GetComponent<AudioSource>();
+        }
+
+        if (footstepAudioSource == null && (leftFootstepClip != null || rightFootstepClip != null))
+        {
+            footstepAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        if (footstepAudioSource != null)
+        {
+            footstepAudioSource.playOnAwake = false;
+
+            if (footstepAudioSource.GetComponent<SettingsAudioSource>() == null)
+            {
+                footstepAudioSource.gameObject.AddComponent<SettingsAudioSource>();
+            }
+        }
     }
 
     private void Update()
@@ -97,6 +134,8 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
             characterAnimator.SetBool(WalkParameter, isMoving);
         }
 
+        UpdateFootsteps(isMoving);
+
         if (rotateToMoveDirection && isMoving)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
@@ -116,6 +155,52 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
         }
 
         verticalSpeed += Physics.gravity.y * Time.deltaTime;
+    }
+
+    private void UpdateFootsteps(bool isMoving)
+    {
+        if (!isMoving || footstepAudioSource == null)
+        {
+            if (wasPlayingFootsteps && footstepAudioSource != null)
+            {
+                footstepAudioSource.Stop();
+            }
+
+            footstepTimer = playFootstepImmediately ? 0f : footstepInterval;
+            playLeftFootstepNext = true;
+            wasPlayingFootsteps = false;
+            return;
+        }
+
+        wasPlayingFootsteps = true;
+        footstepTimer -= Time.deltaTime;
+
+        if (footstepTimer > 0f)
+        {
+            return;
+        }
+
+        PlayNextFootstep();
+        footstepTimer = footstepInterval;
+    }
+
+    private void PlayNextFootstep()
+    {
+        AudioClip clip = playLeftFootstepNext ? leftFootstepClip : rightFootstepClip;
+
+        if (clip == null)
+        {
+            clip = playLeftFootstepNext ? rightFootstepClip : leftFootstepClip;
+        }
+
+        if (clip != null)
+        {
+            float randomVolume = UnityEngine.Random.Range(footstepVolumeRange.x, footstepVolumeRange.y);
+            footstepAudioSource.pitch = UnityEngine.Random.Range(footstepPitchRange.x, footstepPitchRange.y);
+            footstepAudioSource.PlayOneShot(clip, footstepVolume * randomVolume);
+        }
+
+        playLeftFootstepNext = !playLeftFootstepNext;
     }
 
     private void OnDisable()
@@ -146,6 +231,14 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
         moveBackwardPressed = false;
         moveRightPressed = false;
         moveLeftPressed = false;
+        footstepTimer = playFootstepImmediately ? 0f : footstepInterval;
+        playLeftFootstepNext = true;
+        wasPlayingFootsteps = false;
+
+        if (footstepAudioSource != null)
+        {
+            footstepAudioSource.Stop();
+        }
 
         if (characterAnimator != null)
         {
