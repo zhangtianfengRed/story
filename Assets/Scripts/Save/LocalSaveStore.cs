@@ -12,6 +12,7 @@ public static class LocalSaveStore
         public const string GameSettings = "save.game.settings";
         public const string SceneProgress = "save.game.sceneProgress";
         public const string GameFlowProgress = "save.game.flowProgress";
+        public const string RoomInteractionProgress = "save.game.roomInteractionProgress";
     }
 
     public static bool HasKey(string key)

@@ -25,6 +25,10 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
     [Tooltip("不指定时会自动查找当前对象或子对象上的 Animator。")]
     public Animator targetAnimator;
 
+    [Header("Resume")]
+    [Tooltip("进入场景时，如果当前步骤保存过继续坐标，则自动把玩家摆到那个位置。")]
+    public bool restoreSavedResumeStateOnStart = true;
+
     [Header("Footsteps")]
     [Tooltip("播放移动脚步声的 AudioSource。不指定时会自动使用或创建当前对象上的 AudioSource。")]
     public AudioSource footstepAudioSource;
@@ -51,6 +55,7 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
     private bool moveBackwardPressed;
     private bool moveRightPressed;
     private bool moveLeftPressed;
+    private bool hasAttemptedResumeRestore;
     private const int VirtualKeyW = 0x57;
     private const int VirtualKeyA = 0x41;
     private const int VirtualKeyS = 0x53;
@@ -106,6 +111,11 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
                 footstepAudioSource.gameObject.AddComponent<SettingsAudioSource>();
             }
         }
+    }
+
+    private void Start()
+    {
+        TryRestoreSavedResumeState();
     }
 
     private void Update()
@@ -244,6 +254,49 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
         {
             characterAnimator.SetBool(WalkParameter, false);
         }
+    }
+
+    public bool TryRestoreSavedResumeState()
+    {
+        if (!restoreSavedResumeStateOnStart || hasAttemptedResumeRestore)
+        {
+            return false;
+        }
+
+        hasAttemptedResumeRestore = true;
+
+        if (!RoomInteractionProgressManager.Instance.TryGetResumeState(out RoomInteractionResumeState resumeState) ||
+            !resumeState.HasAnyData())
+        {
+            return false;
+        }
+
+        ApplyResumeState(resumeState);
+        return true;
+    }
+
+    private void ApplyResumeState(RoomInteractionResumeState resumeState)
+    {
+        Vector3 targetPosition = resumeState.hasPosition ? resumeState.position : transform.position;
+        Quaternion targetRotation = resumeState.hasRotation
+            ? Quaternion.Euler(resumeState.eulerAngles)
+            : transform.rotation;
+
+        bool wasControllerEnabled = characterController != null && characterController.enabled;
+        if (wasControllerEnabled)
+        {
+            characterController.enabled = false;
+        }
+
+        transform.SetPositionAndRotation(targetPosition, targetRotation);
+        Physics.SyncTransforms();
+
+        if (wasControllerEnabled)
+        {
+            characterController.enabled = true;
+        }
+
+        ResetMovementState();
     }
 
     private void UpdateMovementButtons()
