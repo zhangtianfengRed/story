@@ -4,11 +4,14 @@ using UnityEngine;
 [Serializable]
 public class RoomInteractionProgressRequirement
 {
-    [Tooltip("需要已经完成的互动进度 ID。默认在当前 GameFlow Step 作用域内检查。")]
+    [Tooltip("需要检查的互动进度 ID。默认在当前 GameFlow Step 作用域内检查。")]
     public string progressId;
 
+    [Tooltip("判断这个 ID 下的哪一种次数。Open 是按 E 打开次数，Completion 是玩法完成次数。")]
+    public RoomInteractionProgressCountType countType = RoomInteractionProgressCountType.Completion;
+
     [Min(1)]
-    [Tooltip("该互动进度至少完成多少次才算满足。")]
+    [Tooltip("该次数至少达到多少才算满足。")]
     public int minimumCompletionCount = 1;
 
     public bool IsSatisfied()
@@ -18,7 +21,7 @@ public class RoomInteractionProgressRequirement
             return true;
         }
 
-        return RoomInteractionProgressManager.Instance.GetCompletionCount(progressId) >= Mathf.Max(1, minimumCompletionCount);
+        return RoomInteractionProgressManager.Instance.GetProgressCount(progressId, countType) >= Mathf.Max(1, minimumCompletionCount);
     }
 
     public bool IsConfigured()

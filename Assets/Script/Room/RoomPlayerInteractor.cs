@@ -11,6 +11,9 @@ public class RoomPlayerInteractor : MonoBehaviour
     public RoomInteractionPromptUI promptUI;
     public bool autoFindPromptUI = true;
 
+    [Header("Debug")]
+    public bool logCurrentTarget;
+
     public RoomInteractable CurrentTarget { get; private set; }
 
     private void Awake()
@@ -104,6 +107,13 @@ public class RoomPlayerInteractor : MonoBehaviour
     private void SetCurrentTarget(RoomInteractable nextTarget)
     {
         CurrentTarget = nextTarget;
+
+        if (logCurrentTarget)
+        {
+            Debug.Log(CurrentTarget != null
+                ? $"[RoomPlayerInteractor] Current target: {CurrentTarget.name}, promptUI={(promptUI != null ? promptUI.name : "null")}"
+                : $"[RoomPlayerInteractor] Current target: none, promptUI={(promptUI != null ? promptUI.name : "null")}", this);
+        }
 
         if (promptUI == null)
         {

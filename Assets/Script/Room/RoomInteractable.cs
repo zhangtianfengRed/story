@@ -17,6 +17,16 @@ public class RoomInteractableEvent : UnityEvent<RoomInteractable>
 {
 }
 
+public enum RoomInteractableInspectorMode
+{
+    FullCustom = 0,
+    Simple = 1,
+    RecordProgress = 2,
+    Conditional = 3,
+    ConditionalWithDefault = 4,
+    RecordAndAdvance = 5
+}
+
 [System.Serializable]
 public class RoomInteractionResumeOverride
 {
@@ -56,13 +66,6 @@ public class RoomInteractionVariant
     [Tooltip("留空则沿用 RoomInteractable 上的 promptText。")]
     public string promptTextOverride;
 
-    [Tooltip("互动执行后记录的互动进度 ID。留空则不记录。")]
-    public string completionProgressId;
-
-    [Min(1)]
-    [Tooltip("每次互动后给该进度增加多少次。")]
-    public int completionProgressIncrement = 1;
-
     [Header("Resume State")]
     public RoomInteractionResumeOverride resumeOverride = new RoomInteractionResumeOverride();
 
@@ -96,13 +99,6 @@ public class RoomInteractionVariant
 
         onInteractWithPlayer.Invoke(player);
         onInteractWithTarget.Invoke(interactable);
-
-        if (!string.IsNullOrWhiteSpace(completionProgressId))
-        {
-            RoomInteractionProgressManager.Instance.MarkCompleted(
-                completionProgressId,
-                Mathf.Max(1, completionProgressIncrement));
-        }
 
         if (resumeOverride != null)
         {
@@ -196,11 +192,17 @@ public class RoomInteractable : MonoBehaviour
     }
 
     [Header("Detection")]
+    [Tooltip("只影响 Inspector 显示复杂度，不改变运行逻辑。")]
+    public RoomInteractableInspectorMode inspectorMode = RoomInteractableInspectorMode.FullCustom;
+
     public bool isInteractable = true;
     public Transform detectionCenter;
 
     [Min(0f)]
     public float interactionRange = 2f;
+
+    [Tooltip("开启后只按 XZ 平面距离判断是否靠近，适合桌面物品、地面道具这类有高度差的互动。")]
+    public bool ignoreVerticalDistance = true;
 
     [Header("Prompt")]
     public string promptText = "按下 {key} 进行交互";
@@ -214,12 +216,6 @@ public class RoomInteractable : MonoBehaviour
     [Header("Interaction Logic")]
     public RoomInteractionBehaviour[] interactionBehaviours;
     public RoomInteractionAction[] interactionActions;
-    [Tooltip("主互动执行后记录的互动进度 ID。留空则不记录。")]
-    public string completionProgressId;
-
-    [Min(1)]
-    [Tooltip("每次主互动后给该进度增加多少次。")]
-    public int completionProgressIncrement = 1;
 
     [Header("Resume State")]
     public RoomInteractionResumeOverride primaryResumeOverride = new RoomInteractionResumeOverride();
@@ -227,6 +223,24 @@ public class RoomInteractable : MonoBehaviour
     public UnityEvent onInteract = new UnityEvent();
     public RoomGameObjectEvent onInteractWithPlayer = new RoomGameObjectEvent();
     public RoomInteractableEvent onInteractWithTarget = new RoomInteractableEvent();
+
+    [Header("Interaction Progress")]
+    [Tooltip("这个互动共用的进度 ID。打开次数和完成次数都会记录在这个 ID 下。留空则不记录。")]
+    public string progressId;
+
+    [Min(1)]
+    [Tooltip("每次按 E 打开时增加多少次。通常填 1。")]
+    public int openProgressIncrement = 1;
+
+    [Tooltip("打开次数写入成功后触发。可选，不配置则忽略。")]
+    public UnityEvent onOpenProgressRecorded = new UnityEvent();
+
+    [Min(1)]
+    [Tooltip("玩法完成后增加多少次。通常填 1。")]
+    public int completionTaskProgressIncrement = 1;
+
+    [Tooltip("玩法完成进度写入成功时触发。可选，不配置则忽略。")]
+    public UnityEvent onCompletionTaskProgressRecorded = new UnityEvent();
 
     [Header("Conditional Interaction")]
     [Tooltip("开启后：满足条件执行上面的主互动；不满足时执行下面的默认互动。")]
@@ -316,7 +330,13 @@ public class RoomInteractable : MonoBehaviour
 
     public float GetSqrDistanceTo(Vector3 worldPosition)
     {
-        return (DetectionCenterPosition - worldPosition).sqrMagnitude;
+        Vector3 delta = DetectionCenterPosition - worldPosition;
+        if (ignoreVerticalDistance)
+        {
+            delta.y = 0f;
+        }
+
+        return delta.sqrMagnitude;
     }
 
     public bool IsInRange(Vector3 worldPosition)
@@ -405,6 +425,41 @@ public class RoomInteractable : MonoBehaviour
         return ResolveActiveInteractionMode() == ActiveInteractionMode.Primary;
     }
 
+    public void RecordCompletionProgress()
+    {
+        string resolvedProgressId = ResolveProgressId();
+        if (string.IsNullOrWhiteSpace(resolvedProgressId))
+        {
+            Debug.LogWarning($"[RoomInteractable] Completion progress ID is empty on {name}.", this);
+            return;
+        }
+
+        RoomInteractionProgressManager.Instance.MarkProgress(
+            resolvedProgressId,
+            RoomInteractionProgressCountType.Completion,
+            ResolveCompletionTaskProgressIncrement());
+        onCompletionTaskProgressRecorded.Invoke();
+    }
+
+    public void RecordProgress(string progressId)
+    {
+        RecordProgress(progressId, 1);
+    }
+
+    public void RecordProgress(string progressId, int increment)
+    {
+        if (string.IsNullOrWhiteSpace(progressId))
+        {
+            Debug.LogWarning($"[RoomInteractable] Progress ID is empty on {name}.", this);
+            return;
+        }
+
+        RoomInteractionProgressManager.Instance.MarkProgress(
+            progressId,
+            RoomInteractionProgressCountType.Completion,
+            Mathf.Max(1, increment));
+    }
+
     private ActiveInteractionMode ResolveActiveInteractionMode()
     {
         if (!useConditionalInteraction)
@@ -431,17 +486,43 @@ public class RoomInteractable : MonoBehaviour
         onInteractWithPlayer.Invoke(player);
         onInteractWithTarget.Invoke(this);
 
-        if (!string.IsNullOrWhiteSpace(completionProgressId))
-        {
-            RoomInteractionProgressManager.Instance.MarkCompleted(
-                completionProgressId,
-                Mathf.Max(1, completionProgressIncrement));
-        }
+        RecordOpenProgressIfNeeded();
 
         if (primaryResumeOverride != null)
         {
             primaryResumeOverride.Apply(context);
         }
+    }
+
+    private void RecordOpenProgressIfNeeded()
+    {
+        string resolvedProgressId = ResolveProgressId();
+
+        if (string.IsNullOrWhiteSpace(resolvedProgressId))
+        {
+            return;
+        }
+
+        RoomInteractionProgressManager.Instance.MarkProgress(
+            resolvedProgressId,
+            RoomInteractionProgressCountType.Open,
+            ResolveOpenProgressIncrement());
+        onOpenProgressRecorded.Invoke();
+    }
+
+    private string ResolveProgressId()
+    {
+        return progressId;
+    }
+
+    private int ResolveOpenProgressIncrement()
+    {
+        return Mathf.Max(1, openProgressIncrement);
+    }
+
+    private int ResolveCompletionTaskProgressIncrement()
+    {
+        return Mathf.Max(1, completionTaskProgressIncrement);
     }
 
     private void ExecuteInteractionBehaviours(RoomInteractionContext context)
