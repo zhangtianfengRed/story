@@ -31,6 +31,12 @@ public class CommandMouseInteractable : MonoBehaviour
     public QueryTriggerInteraction triggerInteraction = QueryTriggerInteraction.Ignore;
     public bool ignoreWhenPointerOverUI = true;
 
+    [Header("State")]
+    [Tooltip("关闭后不会被鼠标射线检测、点击或显示高亮。")]
+    public bool isInteractable = true;
+    [Tooltip("调用 CompleteInteraction 后，自动关闭鼠标选择和高亮。")]
+    public bool disableInteractionOnCompleted = true;
+
     [Header("Highlight")]
     [Tooltip("不手动指定时，会自动收集当前物体及子物体上的 Renderer。")]
     public Renderer[] targetRenderers;
@@ -44,16 +50,29 @@ public class CommandMouseInteractable : MonoBehaviour
     public UnityEvent onClick = new UnityEvent();
     public CommandGameObjectEvent onClickObject = new CommandGameObjectEvent();
     public CommandColliderEvent onClickCollider = new CommandColliderEvent();
+    public UnityEvent onCompleted = new UnityEvent();
+    public CommandGameObjectEvent onCompletedObject = new CommandGameObjectEvent();
 
     private readonly Dictionary<Renderer, Material[]> originalMaterialsByRenderer =
         new Dictionary<Renderer, Material[]>();
 
     private bool isHovered;
+    private bool isCompleted;
     private Collider currentHitCollider;
+
+    public bool IsInteractable
+    {
+        get { return isInteractable; }
+    }
 
     public bool IsHovered
     {
         get { return isHovered; }
+    }
+
+    public bool IsCompleted
+    {
+        get { return isCompleted; }
     }
 
     public Collider CurrentHitCollider
@@ -74,6 +93,12 @@ public class CommandMouseInteractable : MonoBehaviour
 
     private void Update()
     {
+        if (!isInteractable)
+        {
+            SetHovered(false, null);
+            return;
+        }
+
         bool pointerOverTarget = TryGetPointerTarget(out Collider hitCollider);
         SetHovered(pointerOverTarget, hitCollider);
 
@@ -106,13 +131,58 @@ public class CommandMouseInteractable : MonoBehaviour
         SetHovered(hovered, currentHitCollider);
     }
 
+    public void SetInteractable(bool interactable)
+    {
+        if (isInteractable == interactable)
+        {
+            return;
+        }
+
+        isInteractable = interactable;
+        if (!isInteractable)
+        {
+            SetHovered(false, null);
+        }
+    }
+
     public void InvokeClick()
     {
         InvokeClick(currentHitCollider);
     }
 
+    public void CompleteInteraction()
+    {
+        if (isCompleted)
+        {
+            return;
+        }
+
+        SetHovered(false, null);
+        isCompleted = true;
+
+        onCompleted.Invoke();
+        onCompletedObject.Invoke(gameObject);
+
+        if (disableInteractionOnCompleted)
+        {
+            SetInteractable(false);
+        }
+    }
+
+    public void ResetCompletion()
+    {
+        isCompleted = false;
+        SetInteractable(true);
+    }
+
     private void SetHovered(bool hovered, Collider hitCollider)
     {
+        if (hovered && !isInteractable)
+        {
+            hovered = false;
+            hitCollider = null;
+        }
+
         if (isHovered == hovered)
         {
             currentHitCollider = hovered ? hitCollider : null;
@@ -138,6 +208,11 @@ public class CommandMouseInteractable : MonoBehaviour
 
     private void InvokeClick(Collider hitCollider)
     {
+        if (!isInteractable)
+        {
+            return;
+        }
+
         onClick.Invoke();
         onClickObject.Invoke(gameObject);
         onClickCollider.Invoke(hitCollider);
@@ -159,6 +234,11 @@ public class CommandMouseInteractable : MonoBehaviour
     private bool TryGetPointerTarget(out Collider hitCollider)
     {
         hitCollider = null;
+
+        if (!isInteractable)
+        {
+            return false;
+        }
 
         if (ignoreWhenPointerOverUI &&
             EventSystem.current != null &&
