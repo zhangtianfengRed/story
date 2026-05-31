@@ -2215,7 +2215,7 @@ MonoBehaviour:
   onInteractWithTarget:
     m_PersistentCalls:
       m_Calls: []
-  progressId: 
+  progressId: Paper
   openProgressIncrement: 1
   onOpenProgressRecorded:
     m_PersistentCalls:
@@ -2224,9 +2224,12 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
-  useConditionalInteraction: 0
+  useConditionalInteraction: 1
   unlockConditions:
-    requiredInteractionProgresses: []
+    requiredInteractionProgresses:
+    - progressId: ShowerTable
+      countType: 0
+      minimumCompletionCount: 1
     minimumCurrentSceneCompletionCount: 0
     requiredSceneCompletions: []
   defaultInteraction:
@@ -9691,7 +9694,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: 8a26205d7a278b94781ce276c9cccdbe, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 3eb0809bd4e1d344db4494f000fd9ff0, type: 2}
   isGlobal: 1
   blendDistance: 0
   weight: 1
@@ -11649,7 +11652,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &510146301
 Transform:
   m_ObjectHideFlags: 0
@@ -18991,13 +18994,121 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8775755994404269446, guid: caea58059a95c7b489169dee009640fe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 854465235}
+    - targetCorrespondingSourceObject: {fileID: 8775755994404269446, guid: caea58059a95c7b489169dee009640fe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 854465234}
   m_SourcePrefab: {fileID: 100100000, guid: caea58059a95c7b489169dee009640fe, type: 3}
 --- !u!4 &854465232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8775755994404696486, guid: caea58059a95c7b489169dee009640fe, type: 3}
   m_PrefabInstance: {fileID: 854465231}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &854465233 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8775755994404269446, guid: caea58059a95c7b489169dee009640fe, type: 3}
+  m_PrefabInstance: {fileID: 854465231}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &854465234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854465233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
+--- !u!114 &854465235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854465233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 854465234}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  useConditionalInteraction: 1
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &855483132
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29281,9 +29392,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1659236327}
+  - {fileID: 100226247}
   - {fileID: 854465232}
   - {fileID: 510146301}
-  - {fileID: 100226247}
   - {fileID: 1075904604}
   - {fileID: 1716741316}
   m_Father: {fileID: 0}
@@ -37399,7 +37510,7 @@ MonoBehaviour:
   onInteractWithTarget:
     m_PersistentCalls:
       m_Calls: []
-  progressId: 
+  progressId: ShowerTable
   openProgressIncrement: 1
   onOpenProgressRecorded:
     m_PersistentCalls:
@@ -42153,7 +42264,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5587437515491433922, guid: 2ddf1684d4a2993469e6e913e0979768, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.219
+      value: -1.216
       objectReference: {fileID: 0}
     - target: {fileID: 5587437515491433922, guid: 2ddf1684d4a2993469e6e913e0979768, type: 3}
       propertyPath: m_LocalPosition.y
@@ -42161,7 +42272,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5587437515491433922, guid: 2ddf1684d4a2993469e6e913e0979768, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.933
+      value: 8.935
       objectReference: {fileID: 0}
     - target: {fileID: 5587437515491433922, guid: 2ddf1684d4a2993469e6e913e0979768, type: 3}
       propertyPath: m_LocalRotation.w
@@ -44559,7 +44670,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1973980907
 Transform:
   m_ObjectHideFlags: 0

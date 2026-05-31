@@ -180,8 +180,12 @@ public class RoomInteractionVariant
 }
 
 [DisallowMultipleComponent]
+[RequireComponent(typeof(RoomInteractableHighlight))]
+[AddComponentMenu("Command/Room Interactable")]
 public class RoomInteractable : MonoBehaviour
 {
+    private const string DefaultHighlightOverlayMaterialPath = "Assets/Material/RoomInteractableOverlayPulse.mat";
+
     private static readonly List<RoomInteractable> activeInteractables = new List<RoomInteractable>();
 
     private enum ActiveInteractionMode
@@ -255,6 +259,12 @@ public class RoomInteractable : MonoBehaviour
     private bool isHighlighted;
     private bool isCurrentTarget;
 
+    private void Reset()
+    {
+        EnsureHighlightController();
+        AssignDefaultHighlightOverlayMaterialIfNeeded();
+    }
+
     public static List<RoomInteractable> ActiveInteractables
     {
         get { return activeInteractables; }
@@ -326,6 +336,7 @@ public class RoomInteractable : MonoBehaviour
         }
 
         EnsureHighlightController();
+        AssignDefaultHighlightOverlayMaterialIfNeeded();
     }
 
     public float GetSqrDistanceTo(Vector3 worldPosition)
@@ -563,6 +574,24 @@ public class RoomInteractable : MonoBehaviour
         {
             highlightController = GetComponentInChildren<RoomInteractableHighlight>(true);
         }
+    }
+
+    private void AssignDefaultHighlightOverlayMaterialIfNeeded()
+    {
+#if UNITY_EDITOR
+        if (highlightController == null || highlightController.highlightedOverlayMaterial != null)
+        {
+            return;
+        }
+
+        highlightController.highlightedOverlayMaterial =
+            UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(DefaultHighlightOverlayMaterialPath);
+
+        if (highlightController.highlightedOverlayMaterial != null)
+        {
+            UnityEditor.EditorUtility.SetDirty(highlightController);
+        }
+#endif
     }
 
     private string GetKeyDisplayName(KeyCode key)
