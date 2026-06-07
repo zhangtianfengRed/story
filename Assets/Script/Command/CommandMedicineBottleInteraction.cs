@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 [AddComponentMenu("Command/Medicine Bottle Interaction")]
@@ -66,6 +67,13 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
     public float resetRotationDuration = 0.3f;
 
     [Header("Pour Motion")]
+    [FormerlySerializedAs("preDragLocalOffset")]
+    [Tooltip("触发倒药动作前，pourTarget 相对初始本地坐标先移动到的偏移。保持 0 不移动。")]
+    public Vector3 prePourLocalOffset = Vector3.zero;
+    [Min(0f)]
+    [FormerlySerializedAs("preDragMoveDuration")]
+    [Tooltip("倒药动作前位移到 prePourLocalOffset 的时长。0 表示立即到位。")]
+    public float prePourMoveDuration = 0.2f;
     [Tooltip("药盖飞离后点击瓶身，瓶子斜倒到这个本地旋转角度。")]
     public Vector3 pourLocalEulerOffset = new Vector3(0f, 0f, -65f);
     [Min(0.01f)]
@@ -107,6 +115,7 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
     private Vector3 capInitialLocalPosition;
     private Quaternion capInitialLocalRotation;
     private Quaternion rotationInitialLocalRotation;
+    private Vector3 pourInitialLocalPosition;
     private Quaternion pourInitialLocalRotation;
     private Vector3[] capsuleInitialLocalPositions;
     private Quaternion[] capsuleInitialLocalRotations;
@@ -122,6 +131,7 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
     private bool capsulesPoured;
     private bool interactionCompleted;
     private bool isDraggingBottle;
+    private bool prePourPositionApplied;
 
     private void Reset()
     {
@@ -153,6 +163,7 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
         capOpenDuration = Mathf.Max(0.01f, capOpenDuration);
         capSeparateDuration = Mathf.Max(0.01f, capSeparateDuration);
         resetRotationDuration = Mathf.Max(0.01f, resetRotationDuration);
+        prePourMoveDuration = Mathf.Max(0f, prePourMoveDuration);
         pourDuration = Mathf.Max(0.01f, pourDuration);
         capsulePourDuration = Mathf.Max(0.01f, capsulePourDuration);
         capsulePourInterval = Mathf.Max(0f, capsulePourInterval);
@@ -230,6 +241,7 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
         interactionCompleted = false;
         horizontalAngle = 0f;
         zAngle = 0f;
+        prePourPositionApplied = false;
 
         if (capTransform != null)
         {
@@ -246,6 +258,7 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
         Transform resolvedPourTarget = ResolvePourTarget();
         if (resolvedPourTarget != null)
         {
+            resolvedPourTarget.localPosition = pourInitialLocalPosition;
             resolvedPourTarget.localRotation = pourInitialLocalRotation;
         }
 
@@ -289,6 +302,13 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
         {
             isDraggingBottle = false;
             activeMotion = StartCoroutine(PourBottleAndCapsulesRoutine());
+            return;
+        }
+
+        if (capOpened)
+        {
+            isDraggingBottle = false;
+            LogDebug("Bottle drag ignored because cap is already opened.");
             return;
         }
 
@@ -343,6 +363,13 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
 
     private void BeginBottleDrag()
     {
+        if (capOpened && !capSeparated)
+        {
+            isDraggingBottle = false;
+            LogDebug("Bottle drag blocked because cap is already opened.");
+            return;
+        }
+
         isDraggingBottle = true;
         lastMousePosition = Input.mousePosition;
         LogDebug("Bottle drag started.");
@@ -351,6 +378,13 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
 
     private void UpdateBottleDrag()
     {
+        if (capOpened && !capSeparated)
+        {
+            LogDebug("Bottle drag stopped because cap is already opened.");
+            isDraggingBottle = false;
+            return;
+        }
+
         if (!Input.GetMouseButton(0))
         {
             LogDebug("Bottle drag stopped because mouse button is up.");
@@ -417,6 +451,7 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
             capOpenDuration);
 
         capOpened = true;
+        isDraggingBottle = false;
         onCapOpened.Invoke();
         activeMotion = null;
     }
@@ -452,9 +487,37 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
         activeMotion = null;
     }
 
+    private bool ShouldApplyPrePourMove(Transform target)
+    {
+        if (target == null ||
+            prePourPositionApplied ||
+            prePourLocalOffset.sqrMagnitude <= 0.000001f)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     private IEnumerator PourBottleAndCapsulesRoutine()
     {
         Transform target = ResolvePourTarget();
+        if (ShouldApplyPrePourMove(target))
+        {
+            Vector3 startPosition = target.localPosition;
+            Vector3 targetPosition = pourInitialLocalPosition + prePourLocalOffset;
+
+            yield return AnimateTransform(
+                target,
+                startPosition,
+                target.localRotation,
+                targetPosition,
+                target.localRotation,
+                prePourMoveDuration);
+
+            prePourPositionApplied = true;
+        }
+
         if (target != null)
         {
             Quaternion startRotation = target.localRotation;
@@ -812,6 +875,7 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
         Transform resolvedPourTarget = ResolvePourTarget();
         if (resolvedPourTarget != null)
         {
+            pourInitialLocalPosition = resolvedPourTarget.localPosition;
             pourInitialLocalRotation = resolvedPourTarget.localRotation;
         }
 

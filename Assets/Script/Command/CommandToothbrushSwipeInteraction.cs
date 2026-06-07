@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class CommandIntEvent : UnityEvent<int>
@@ -14,15 +16,29 @@ public class CommandToothbrushSwipeInteraction : MonoBehaviour
     [Header("References")]
     [Tooltip("负责鼠标射线检测和高亮的组件。留空时会从当前物体自动获取。")]
     public CommandMouseInteractable mouseInteractable;
+    [Tooltip("这个牙刷玩法使用的独立摄像机。只用于牙刷脚本自己的点击检测，不会覆盖 CommandMouseInteractable.targetCamera。")]
+    public Camera interactionCamera;
     [Tooltip("实际左右滑动的物体。留空时滑动当前物体。")]
     public Transform slideTarget;
+
+    [Header("Direct Input")]
+    [Tooltip("牙刷玩法常在独立相机或 UI 上层中操作。开启后，即使鼠标在 UI 上也允许点击和滑动。")]
+    public bool allowInteractionWhenPointerOverUI = true;
+    public LayerMask directRaycastLayers = ~0;
+    [Min(0f)]
+    public float directRaycastDistance = 1000f;
+    public QueryTriggerInteraction directTriggerInteraction = QueryTriggerInteraction.Collide;
 
     [Header("Slide")]
     [Tooltip("本地空间里的滑动方向。默认 Local X。")]
     public Vector3 localSlideAxis = Vector3.right;
     [Min(0f)]
-    [Tooltip("从初始位置到单侧端点的最大距离。")]
-    public float slideRange = 0.08f;
+    [FormerlySerializedAs("slideRange")]
+    [Tooltip("鼠标向左拖动时，从初始位置到左侧端点的最大偏移。")]
+    public float leftSlideRange = 0.08f;
+    [Min(0f)]
+    [Tooltip("鼠标向右拖动时，从初始位置到右侧端点的最大偏移。")]
+    public float rightSlideRange = 0.08f;
     [Min(0f)]
     [Tooltip("鼠标横向拖动转换到模型位移的倍率。")]
     public float mouseSensitivity = 0.0025f;
@@ -96,9 +112,11 @@ public class CommandToothbrushSwipeInteraction : MonoBehaviour
             localSlideAxis = Vector3.right;
         }
 
-        slideRange = Mathf.Max(0f, slideRange);
+        leftSlideRange = Mathf.Max(0f, leftSlideRange);
+        rightSlideRange = Mathf.Max(0f, rightSlideRange);
         mouseSensitivity = Mathf.Max(0f, mouseSensitivity);
         requiredSwipeCount = Mathf.Max(1, requiredSwipeCount);
+        directRaycastDistance = Mathf.Max(0f, directRaycastDistance);
     }
 
     private void Update()
@@ -106,6 +124,15 @@ public class CommandToothbrushSwipeInteraction : MonoBehaviour
         if (isCompleted)
         {
             return;
+        }
+
+        Collider hitCollider;
+        if (interactionCamera != null &&
+            !isDragging &&
+            Input.GetMouseButtonDown(0) &&
+            TryGetInteractionCameraHitCollider(out hitCollider))
+        {
+            BeginSwipeFromDirectInput();
         }
 
         if (isDragging)
@@ -116,12 +143,24 @@ public class CommandToothbrushSwipeInteraction : MonoBehaviour
 
     public void BeginSwipe()
     {
+        BeginSwipe(false);
+    }
+
+    private void BeginSwipeFromDirectInput()
+    {
+        BeginSwipe(true);
+    }
+
+    private void BeginSwipe(bool ignoreMouseInteractableGate)
+    {
         if (isCompleted || isDragging)
         {
             return;
         }
 
-        if (mouseInteractable != null && !mouseInteractable.IsInteractable)
+        if (!ignoreMouseInteractableGate &&
+            mouseInteractable != null &&
+            !mouseInteractable.IsInteractable)
         {
             return;
         }
@@ -182,27 +221,79 @@ public class CommandToothbrushSwipeInteraction : MonoBehaviour
 
         currentOffset = Mathf.Clamp(
             currentOffset + deltaX * mouseSensitivity,
-            -slideRange,
-            slideRange);
+            -leftSlideRange,
+            rightSlideRange);
 
         ApplySlideOffset();
         EvaluateSwipeEndpoint();
     }
 
+    private bool TryGetInteractionCameraHitCollider(out Collider hitCollider)
+    {
+        hitCollider = null;
+
+        if (ShouldIgnorePointerOverUI())
+        {
+            return false;
+        }
+
+        Ray ray = interactionCamera.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out RaycastHit hit, directRaycastDistance, directRaycastLayers, directTriggerInteraction))
+        {
+            return false;
+        }
+
+        if (!IsSwipeTargetCollider(hit.collider))
+        {
+            return false;
+        }
+
+        hitCollider = hit.collider;
+        return true;
+    }
+
+    private bool ShouldIgnorePointerOverUI()
+    {
+        return !allowInteractionWhenPointerOverUI &&
+            EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject();
+    }
+
+    private bool IsSwipeTargetCollider(Collider hitCollider)
+    {
+        return IsColliderUnderRoot(hitCollider, mouseInteractable != null ? mouseInteractable.transform : null) ||
+            IsColliderUnderRoot(hitCollider, transform) ||
+            IsColliderUnderRoot(hitCollider, slideTarget);
+    }
+
+    private static bool IsColliderUnderRoot(Collider hitCollider, Transform root)
+    {
+        if (hitCollider == null || root == null)
+        {
+            return false;
+        }
+
+        Transform hitTransform = hitCollider.transform;
+        return hitTransform == root || hitTransform.IsChildOf(root);
+    }
+
     private void EvaluateSwipeEndpoint()
     {
-        if (slideRange <= 0.0001f)
+        bool canReachLeftEndpoint = leftSlideRange > 0.0001f;
+        bool canReachRightEndpoint = rightSlideRange > 0.0001f;
+        if (!canReachLeftEndpoint && !canReachRightEndpoint)
         {
             return;
         }
 
-        float normalizedOffset = currentOffset / slideRange;
         int endpointSide = 0;
-        if (normalizedOffset >= endpointThreshold)
+        if (canReachRightEndpoint &&
+            currentOffset / rightSlideRange >= endpointThreshold)
         {
             endpointSide = 1;
         }
-        else if (normalizedOffset <= -endpointThreshold)
+        else if (canReachLeftEndpoint &&
+            currentOffset / leftSlideRange <= -endpointThreshold)
         {
             endpointSide = -1;
         }

@@ -19072,7 +19072,7 @@ MonoBehaviour:
   onInteractWithTarget:
     m_PersistentCalls:
       m_Calls: []
-  progressId: 
+  progressId: KitchenTable
   openProgressIncrement: 1
   onOpenProgressRecorded:
     m_PersistentCalls:
@@ -19083,7 +19083,10 @@ MonoBehaviour:
       m_Calls: []
   useConditionalInteraction: 1
   unlockConditions:
-    requiredInteractionProgresses: []
+    requiredInteractionProgresses:
+    - progressId: Paper
+      countType: 0
+      minimumCompletionCount: 1
     minimumCurrentSceneCompletionCount: 0
     requiredSceneCompletions: []
   defaultInteraction:
@@ -23680,7 +23683,7 @@ MonoBehaviour:
   onInteractWithTarget:
     m_PersistentCalls:
       m_Calls: []
-  progressId: 
+  progressId: Phone
   openProgressIncrement: 1
   onOpenProgressRecorded:
     m_PersistentCalls:
@@ -23689,9 +23692,12 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
-  useConditionalInteraction: 0
+  useConditionalInteraction: 1
   unlockConditions:
-    requiredInteractionProgresses: []
+    requiredInteractionProgresses:
+    - progressId: KitchenTable
+      countType: 0
+      minimumCompletionCount: 1
     minimumCurrentSceneCompletionCount: 0
     requiredSceneCompletions: []
   defaultInteraction:
@@ -30609,8 +30615,8 @@ MonoBehaviour:
   directRaycastDistance: 1000
   directTriggerInteraction: 2
   directIgnoreWhenPointerOverUI: 0
-  capOpenLocalOffset: {x: 0, y: 0.08, z: 0}
-  capSeparatedLocalOffset: {x: 0, y: 0.35, z: 0}
+  capOpenLocalOffset: {x: 0, y: 0.5, z: 0}
+  capSeparatedLocalOffset: {x: 0, y: 0.8, z: 0}
   capOpenDuration: 0.25
   capSeparateDuration: 0.45
   capSeparateSpinEuler: {x: 0, y: 180, z: 35}
@@ -30621,7 +30627,9 @@ MonoBehaviour:
   maxZRotation: 45
   rotatedAngleThreshold: 2
   resetRotationDuration: 0.3
-  pourLocalEulerOffset: {x: 0, y: 0, z: -65}
+  prePourLocalOffset: {x: 0.15, y: 0.15, z: 0}
+  prePourMoveDuration: 0.5
+  pourLocalEulerOffset: {x: 0, y: -145, z: 0}
   pourDuration: 0.45
   capsuleTransforms: []
   capsulePourTargets: []
@@ -32178,7 +32186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 1425866366}
-  autoUseMainCamera: 1
+  autoUseMainCamera: 0
   raycastLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -36254,10 +36262,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseInteractable: {fileID: 1441210434}
-  slideTarget: {fileID: 1601066885}
-  localSlideAxis: {x: 1, y: 0, z: 0}
-  slideRange: 0.08
-  mouseSensitivity: 0.0025
+  interactionCamera: {fileID: 94387763}
+  slideTarget: {fileID: 1147787501}
+  allowInteractionWhenPointerOverUI: 1
+  directRaycastLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  directRaycastDistance: 1000
+  directTriggerInteraction: 2
+  localSlideAxis: {x: -1, y: 0, z: 0}
+  leftSlideRange: 0.05
+  rightSlideRange: 0
+  mouseSensitivity: 0.0001
   endpointThreshold: 0.82
   requiredSwipeCount: 4
   completeCommandInteractable: 1
@@ -38864,7 +38880,7 @@ MonoBehaviour:
   onInteractWithTarget:
     m_PersistentCalls:
       m_Calls: []
-  progressId: 
+  progressId: Door
   openProgressIncrement: 1
   onOpenProgressRecorded:
     m_PersistentCalls:
@@ -38873,9 +38889,12 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
-  useConditionalInteraction: 0
+  useConditionalInteraction: 1
   unlockConditions:
-    requiredInteractionProgresses: []
+    requiredInteractionProgresses:
+    - progressId: Phone
+      countType: 0
+      minimumCompletionCount: 1
     minimumCurrentSceneCompletionCount: 0
     requiredSceneCompletions: []
   defaultInteraction:
@@ -44670,7 +44689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1973980907
 Transform:
   m_ObjectHideFlags: 0
