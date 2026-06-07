@@ -17,8 +17,13 @@
 - `Assets/Script/Room/RoomInteractionUnlockConditions.cs`
 - `Assets/Script/Room/RoomInteractionBehaviour.cs`
 - `Assets/Script/Room/RoomInteractionAction.cs`
+- `Assets/Script/Room/RoomTopDownPlayerMovementControlSetter.cs`
 - `Assets/Script/Command/CommandMouseInteractable.cs`
 - `Assets/Script/Command/CommandMouseInteractionCompletionGroup.cs`
+- `Assets/Script/Command/CommandTopDownPlayerMovementControlBehaviour.cs`
+- `Assets/Script/Command/CommandTopDownPlayerMovementControlSetter.cs`
+- `Assets/Script/Command/CommandEnableTopDownPlayerMovementControl.cs`
+- `Assets/Script/Command/CommandDisableTopDownPlayerMovementControl.cs`
 - `Assets/Script/Command/CommandToothbrushSwipeInteraction.cs`
 - `Assets/Script/Command/CommandMedicineBottleInteraction.cs`
 
@@ -267,6 +272,39 @@ flowchart TD
 - `invokeWhenEmpty`：没有任何 required item 时是否也算完成。一般保持 false，避免漏配。
 - `onItemCompleted(GameObject)`：单个小道具完成。
 - `onAllCompleted()`：全部完成。
+
+## 通用功能规范
+
+当需求里明确说“通用”时，如果是新加功能，默认同时考虑 Room 和 Command 两套入口，除非用户明确只要其中一套。
+
+- 房间级按 E 触发的通用功能，优先新增或扩展 `RoomInteractionBehaviour` 实现，放在 `Assets/Script/Room`。
+- 玩法内部鼠标点击、Timeline、UnityEvent 可直接绑定的通用功能，优先新增或扩展 `Command` 组件，放在 `Assets/Script/Command`，并加 `AddComponentMenu("Command/...")`。
+- 如果这个 Command 通用功能也需要被 `RoomInteractable.interactionBehaviours` 或其它房间交互流程调用，Command 组件也要继承 `RoomInteractionBehaviour` 并实现 `Execute(RoomInteractionContext context)`。
+- 如果功能作用在共享运行时状态上，例如玩家移动控制，优先把真正的状态开关和公开 API 放在被控制组件本身，再由 Room/Command 两侧的适配组件调用，避免两边复制核心逻辑。
+- 对于开启/关闭这类二态流程，除了可配置 Setter，也优先提供固定语义脚本，例如 `EnableX` 和 `DisableX`，方便在其它交互脚本里直接拖对应流程。
+- Command 通用组件要提供无参数方法，方便绑定到 `UnityEvent`；需要布尔值时，同时提供 `SetX(bool)` 和明确的 `EnableX()` / `DisableX()` 包装方法。
+- 用户说明“不用编译”或“我自己进编辑器编译”时，不运行 Unity 编译或 `dotnet build`，只做代码与轻量文本检查。
+
+### RoomTopDownPlayerMovement 控制开关
+
+`RoomTopDownPlayerMovement` 提供 `SetMovementControlEnabled(bool)`。关闭后不响应 WASD/方向键移动输入，并会清理脚步声、移动按键状态和 Walk 动画状态。
+
+Room 入口使用 `RoomTopDownPlayerMovementControlSetter`：
+
+- 挂在任意 `RoomInteractable` 相关对象上。
+- 放进 `interactionBehaviours`。
+- `targetMovement` 可手动拖玩家的 `RoomTopDownPlayerMovement`。
+- `targetMovement` 留空时，默认从互动上下文里的玩家对象上查找。
+- `movementControlEnabled` 不勾选为屏蔽移动控制，勾选为恢复移动控制。
+
+Command 入口使用以下脚本：
+
+- `CommandTopDownPlayerMovementControlSetter`：可配置开启或关闭，适合需要一个组件通过布尔值切换两种状态的情况。
+- `CommandEnableTopDownPlayerMovementControl`：固定开启移动控制，适合直接放进 `interactionBehaviours` 或绑定到恢复流程。
+- `CommandDisableTopDownPlayerMovementControl`：固定关闭移动控制，适合直接放进 `interactionBehaviours` 或绑定到屏蔽流程。
+- 三个脚本都继承 `RoomInteractionBehaviour`，可以被 `RoomInteractable.interactionBehaviours` 调用，也可以绑定 `CommandMouseInteractable.onClick`、玩法完成事件、Timeline Signal 或其它 `UnityEvent`。
+- 常用 UnityEvent 绑定方法：`ApplyConfiguredState()`、`EnableMovementControl()`、`DisableMovementControl()`、`Apply()`、`SetMovementControlEnabled(bool)`。
+- `targetMovement` 可手动拖玩家的 `RoomTopDownPlayerMovement`；留空时可从 `RoomInteractionContext.Player`、当前对象子物体或场景中查找。
 
 ## 牙刷左右滑动玩法
 

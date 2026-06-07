@@ -37454,6 +37454,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8160103459373274933, guid: d83dae319b796214e93203889b8ae378, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1659236331}
+    - targetCorrespondingSourceObject: {fileID: 8160103459373274933, guid: d83dae319b796214e93203889b8ae378, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1659236335}
   m_SourcePrefab: {fileID: 100100000, guid: d83dae319b796214e93203889b8ae378, type: 3}
 --- !u!4 &1659236327 stripped
 Transform:
@@ -37511,6 +37514,7 @@ MonoBehaviour:
   highlightController: {fileID: 1659236329}
   autoFindHighlightController: 1
   interactionBehaviours:
+  - {fileID: 1659236331}
   - {fileID: 1659236331}
   interactionActions: []
   primaryResumeOverride:
@@ -37577,6 +37581,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetObject: {fileID: 1973980906}
   warnIfTargetMissing: 1
+--- !u!114 &1659236335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659236328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb611fa6f30243e3a3b48828ec63b306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMovement: {fileID: 2088347240085930215}
+  useContextPlayerIfTargetMissing: 1
+  searchContextPlayerChildren: 1
+  searchChildrenIfTargetMissing: 1
+  searchSceneIfTargetMissing: 1
+  includeInactiveTargets: 1
+  warnIfTargetMissing: 1
+  triggerOnce: 0
+  onControlChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1663373896
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44689,7 +44716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1973980907
 Transform:
   m_ObjectHideFlags: 0
@@ -48848,6 +48875,17 @@ MonoBehaviour:
   promptUI: {fileID: 1408748848}
   autoFindPromptUI: 1
   logCurrentTarget: 1
+--- !u!114 &2088347240085930215 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8125951110656847373, guid: d805982bf9da392488a138ce0c1a1028, type: 3}
+  m_PrefabInstance: {fileID: 2088347240085930212}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088347240085930213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3030e355f26bf840b41ba691ab28ec5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6959585343999246080 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1014568043443795948, guid: b0f74fe0b17fd80478b7ad0f1f98d80c, type: 3}

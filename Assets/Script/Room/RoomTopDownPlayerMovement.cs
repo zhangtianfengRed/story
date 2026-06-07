@@ -6,6 +6,9 @@ using UnityEngine;
 public class RoomTopDownPlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
+    [Tooltip("关闭后不响应 WASD/方向键移动输入，可由房间互动行为切换。")]
+    [SerializeField] private bool movementControlEnabled = true;
+
     [Min(0f)]
     public float moveSpeed = 4f;
     [Tooltip("使用 CharacterController.Move 时用于贴地的向下速度。")]
@@ -120,6 +123,11 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!movementControlEnabled)
+        {
+            return;
+        }
+
         UpdateMovementButtons();
 
         Vector2 moveInput = GetMoveInput();
@@ -297,6 +305,26 @@ public class RoomTopDownPlayerMovement : MonoBehaviour
         }
 
         ResetMovementState();
+    }
+
+    public bool MovementControlEnabled
+    {
+        get { return movementControlEnabled; }
+    }
+
+    public void SetMovementControlEnabled(bool enabled)
+    {
+        if (movementControlEnabled == enabled)
+        {
+            return;
+        }
+
+        movementControlEnabled = enabled;
+
+        if (!movementControlEnabled)
+        {
+            ResetMovementState();
+        }
     }
 
     private void UpdateMovementButtons()
