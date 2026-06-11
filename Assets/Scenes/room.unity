@@ -2239,7 +2239,8 @@ MonoBehaviour:
       resumeTransform: {fileID: 0}
       saveRotation: 1
     interactionBehaviours: []
-    interactionActions: []
+    interactionActions:
+    - {fileID: 11400000, guid: 8e0bf0f9ef6a17944b56f067d11e068c, type: 2}
     onInteract:
       m_PersistentCalls:
         m_Calls: []
@@ -36272,7 +36273,7 @@ MonoBehaviour:
   directTriggerInteraction: 2
   localSlideAxis: {x: -1, y: 0, z: 0}
   leftSlideRange: 0.05
-  rightSlideRange: 0
+  rightSlideRange: 0.01
   mouseSensitivity: 0.0001
   endpointThreshold: 0.82
   requiredSwipeCount: 4
@@ -48698,6 +48699,88 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2771145621937507115, guid: 11faa60ff496c5f44ac54cf0ade1290b, type: 3}
   m_PrefabInstance: {fileID: 2140352013}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2147001000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2147001001}
+  - component: {fileID: 2147001002}
+  m_Layer: 0
+  m_Name: RoomItemInspectOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2147001001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147001000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2147001002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147001000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c81adf6ca76e4b319ea52f877a253f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCamera: {fileID: 1136385242}
+  useMainCameraWhenMissing: 1
+  canvasPlaneDistance: 1
+  createUiOnAwake: 0
+  hideOnAwake: 1
+  renderUiAfterCameraEffects: 1
+  canvasSortingOrder: 5000
+  referenceResolution: {x: 1920, y: 1080}
+  overlayColor: {r: 0.02, g: 0.025, b: 0.03, a: 0.58}
+  glassColor: {r: 1, g: 1, b: 1, a: 0}
+  previewRectSize: {x: 960, y: 820}
+  previewRectOffset: {x: 220, y: 0}
+  infoPanelSize: {x: 420, y: 540}
+  infoPanelOffset: {x: 96, y: 0}
+  titleFontSize: 42
+  descriptionFontSize: 22
+  titleColor: {r: 1, g: 1, b: 1, a: 0.96}
+  descriptionColor: {r: 1, g: 1, b: 1, a: 0.82}
+  useBackgroundBlur: 1
+  blurDownsample: 2
+  blurIterations: 2
+  blurSize: 1.5
+  previewLayerIndex: 30
+  previewTextureSize: 1024
+  previewFieldOfView: 28
+  previewDistance: 3
+  previewDistanceMultiplier: 1.35
+  previewFitPadding: 1.7
+  previewBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  closeOnEscape: 1
+  closeOnBackgroundClick: 0
+  setCursorVisibleWhileOpen: 1
+  lockPlayerControls: 1
+  disableInteractorWhileOpen: 1
+  dragRotationSpeed: 0.35
+  zoomSpeed: 0.18
+  minZoom: 0.55
+  maxZoom: 2
 --- !u!4 &4329470997362054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4232013382368083052, guid: d805982bf9da392488a138ce0c1a1028, type: 3}
@@ -49096,3 +49179,4 @@ SceneRoots:
   - {fileID: 473524150}
   - {fileID: 714457864}
   - {fileID: 191638855}
+  - {fileID: 2147001001}
