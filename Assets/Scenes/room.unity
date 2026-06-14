@@ -11653,7 +11653,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &510146301
 Transform:
   m_ObjectHideFlags: 0
@@ -23708,7 +23708,8 @@ MonoBehaviour:
       resumeTransform: {fileID: 0}
       saveRotation: 1
     interactionBehaviours: []
-    interactionActions: []
+    interactionActions:
+    - {fileID: 11400000, guid: 92604c3cb8fc34446891663a1e04610b, type: 2}
     onInteract:
       m_PersistentCalls:
         m_Calls: []
@@ -31145,7 +31146,7 @@ RectTransform:
   m_GameObject: {fileID: 1408748844}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1855491178}
@@ -31212,7 +31213,10 @@ MonoBehaviour:
   promptText: {fileID: 0}
   legacyPromptText: {fileID: 0}
   followInteractableInWorld: 1
+  updateWorldTransformWhileVisible: 0
   faceCamera: 1
+  keepUprightWhenFacingCamera: 1
+  promptRotationOffset: {x: 90, y: 0, z: 0}
   targetCamera: {fileID: 1136385242}
   autoFindCamera: 1
   hideOnAwake: 1

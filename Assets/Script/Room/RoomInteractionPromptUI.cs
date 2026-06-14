@@ -11,7 +11,13 @@ public class RoomInteractionPromptUI : MonoBehaviour
 
     [Header("World Follow")]
     public bool followInteractableInWorld = true;
+    [Tooltip("开启后显示期间每帧更新位置和朝向。关闭时只在切换目标或首次显示时放到交互物上方。")]
+    public bool updateWorldTransformWhileVisible;
     public bool faceCamera = true;
+    [Tooltip("面向摄像机时保持 UI 竖直，只绕世界 Y 轴转向摄像机。")]
+    public bool keepUprightWhenFacingCamera = true;
+    [Tooltip("面向摄像机后额外叠加的本地旋转。World Space UI 需要朝向 Top 时通常使用 X=90。")]
+    public Vector3 promptRotationOffset = new Vector3(90f, 0f, 0f);
     public Camera targetCamera;
     public bool autoFindCamera = true;
 
@@ -47,7 +53,10 @@ public class RoomInteractionPromptUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        UpdateWorldTransform();
+        if (updateWorldTransformWhileVisible)
+        {
+            UpdateWorldTransform();
+        }
     }
 
     public void Show(RoomInteractable interactable, KeyCode key)
@@ -58,9 +67,17 @@ public class RoomInteractionPromptUI : MonoBehaviour
             return;
         }
 
+        bool targetChanged = currentInteractable != interactable;
+        bool wasVisible = IsVisible();
+
         currentInteractable = interactable;
         SetText(interactable.GetPromptText(key));
-        UpdateWorldTransform();
+
+        if (targetChanged || !wasVisible || updateWorldTransformWhileVisible)
+        {
+            UpdateWorldTransform();
+        }
+
         SetVisible(true);
     }
 
@@ -92,9 +109,20 @@ public class RoomInteractionPromptUI : MonoBehaviour
         }
 
         Vector3 directionToCamera = transform.position - targetCamera.transform.position;
+        if (keepUprightWhenFacingCamera)
+        {
+            Vector3 flatDirectionToCamera = Vector3.ProjectOnPlane(directionToCamera, Vector3.up);
+            if (flatDirectionToCamera.sqrMagnitude > 0.0001f)
+            {
+                directionToCamera = flatDirectionToCamera;
+            }
+        }
+
         if (directionToCamera.sqrMagnitude > 0.0001f)
         {
-            transform.rotation = Quaternion.LookRotation(directionToCamera, Vector3.up);
+            transform.rotation =
+                Quaternion.LookRotation(directionToCamera, Vector3.up) *
+                Quaternion.Euler(promptRotationOffset);
         }
     }
 
@@ -138,5 +166,15 @@ public class RoomInteractionPromptUI : MonoBehaviour
         {
             gameObject.SetActive(visible);
         }
+    }
+
+    private bool IsVisible()
+    {
+        if (canvasGroup != null)
+        {
+            return canvasGroup.alpha > 0.001f;
+        }
+
+        return gameObject.activeSelf;
     }
 }
