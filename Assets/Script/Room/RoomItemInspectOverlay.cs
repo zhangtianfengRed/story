@@ -161,7 +161,17 @@ public class RoomItemInspectOverlay : MonoBehaviour
 
     public void Open(GameObject previewPrefab)
     {
-        Open(previewPrefab, null, string.Empty, string.Empty, Vector3.zero, Vector3.zero, 1f, previewDistance, previewFieldOfView);
+        Open(
+            previewPrefab,
+            null,
+            string.Empty,
+            string.Empty,
+            Vector3.zero,
+            Vector3.zero,
+            1f,
+            previewDistance,
+            previewFieldOfView,
+            lockPlayerControls);
     }
 
     public void Open(
@@ -173,7 +183,8 @@ public class RoomItemInspectOverlay : MonoBehaviour
         Vector3 localOffset,
         float scale,
         float cameraDistance,
-        float fieldOfView)
+        float fieldOfView,
+        bool lockPlayerMovementWhileOpen = true)
     {
         if (previewPrefab == null)
         {
@@ -186,7 +197,7 @@ public class RoomItemInspectOverlay : MonoBehaviour
         EnsurePreviewTexture();
         EnsureEventSystem();
         ApplyTargetCameraCullingMask();
-        ApplyPlayerLock(context);
+        ApplyPlayerLock(context, lockPlayerMovementWhileOpen);
         ConfigureBlur(true);
 
         DestroyCurrentPreview();
@@ -678,21 +689,24 @@ public class RoomItemInspectOverlay : MonoBehaviour
         blurEffect.enabled = enabled;
     }
 
-    private void ApplyPlayerLock(RoomInteractionContext context)
+    private void ApplyPlayerLock(RoomInteractionContext context, bool lockPlayerMovementWhileOpen)
     {
-        if (!lockPlayerControls || context == null || context.Player == null)
+        if (context == null || context.Player == null)
         {
             return;
         }
 
-        lockedMovement = context.Player.GetComponentInChildren<RoomTopDownPlayerMovement>(true);
-        if (lockedMovement != null)
+        if (lockPlayerMovementWhileOpen)
         {
-            previousMovementEnabled = lockedMovement.MovementControlEnabled;
-            lockedMovement.SetMovementControlEnabled(false);
+            lockedMovement = context.Player.GetComponentInChildren<RoomTopDownPlayerMovement>(true);
+            if (lockedMovement != null)
+            {
+                previousMovementEnabled = lockedMovement.MovementControlEnabled;
+                lockedMovement.SetMovementControlEnabled(false);
+            }
         }
 
-        if (!disableInteractorWhileOpen)
+        if (!lockPlayerControls || !disableInteractorWhileOpen)
         {
             return;
         }

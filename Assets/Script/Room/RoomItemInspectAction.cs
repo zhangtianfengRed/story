@@ -29,6 +29,11 @@ public class RoomItemInspectAction : RoomInteractionAction
     [Range(10f, 80f)]
     public float fieldOfView = 28f;
 
+    [Header("Room Flow")]
+    [InspectorName("检视期间锁定移动")]
+    [Tooltip("打开物品检视界面期间是否关闭玩家移动。默认开启，避免玩家边检视边走动。")]
+    public bool lockPlayerMovementWhileInspecting = true;
+
     public override void Execute(RoomInteractionContext context)
     {
         RoomItemInspectOverlay overlay = ResolveOverlay();
@@ -54,7 +59,8 @@ public class RoomItemInspectAction : RoomInteractionAction
             localOffset,
             scale,
             cameraDistance,
-            fieldOfView);
+            fieldOfView,
+            lockPlayerMovementWhileInspecting);
     }
 
     private RoomItemInspectOverlay ResolveOverlay()

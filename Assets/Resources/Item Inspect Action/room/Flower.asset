@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10da7559e89b4ff48fdb47315a6b88b9, type: 3}
+  m_Name: Flower
+  m_EditorClassIdentifier: 
+  autoFindOverlay: 1
+  previewPrefab: {fileID: 0}
+  useInteractableObjectWhenPrefabMissing: 1
+  displayName: "\u4ED9\u4EBA\u638C"
+  description: "\u670B\u53CB\u9001\u7684\u793C\u7269"
+  useInteractableNameWhenDisplayNameEmpty: 1
+  initialEulerAngles: {x: 15, y: -25, z: 0}
+  localOffset: {x: 0, y: 0, z: 0}
+  scale: 1
+  cameraDistance: 3
+  fieldOfView: 28
