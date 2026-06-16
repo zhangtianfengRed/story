@@ -29,12 +29,18 @@ public class RoomInteractableEditor : Editor
     private SerializedProperty useConditionalInteraction;
     private SerializedProperty unlockConditions;
     private SerializedProperty defaultInteraction;
+    private SerializedProperty enableUnlockSatisfiedEvent;
+    private SerializedProperty invokeUnlockEventIfAlreadySatisfiedOnEnable;
+    private SerializedProperty invokeUnlockEventOnceWhileEnabled;
+    private SerializedProperty unlockEventHandledProgressId;
+    private SerializedProperty onUnlockConditionsSatisfied;
     private SerializedProperty onHighlightChanged;
     private SerializedProperty onCurrentTargetChanged;
 
     private static bool showDetection = true;
     private static bool showMainLogic = true;
     private static bool showConditions = true;
+    private static bool showUnlockSatisfiedEvent = true;
     private static bool showDefaultInteraction = true;
     private static bool showAdvancedEvents;
 
@@ -64,6 +70,11 @@ public class RoomInteractableEditor : Editor
         useConditionalInteraction = serializedObject.FindProperty("useConditionalInteraction");
         unlockConditions = serializedObject.FindProperty("unlockConditions");
         defaultInteraction = serializedObject.FindProperty("defaultInteraction");
+        enableUnlockSatisfiedEvent = serializedObject.FindProperty("enableUnlockSatisfiedEvent");
+        invokeUnlockEventIfAlreadySatisfiedOnEnable = serializedObject.FindProperty("invokeUnlockEventIfAlreadySatisfiedOnEnable");
+        invokeUnlockEventOnceWhileEnabled = serializedObject.FindProperty("invokeUnlockEventOnceWhileEnabled");
+        unlockEventHandledProgressId = serializedObject.FindProperty("unlockEventHandledProgressId");
+        onUnlockConditionsSatisfied = serializedObject.FindProperty("onUnlockConditionsSatisfied");
         onHighlightChanged = serializedObject.FindProperty("onHighlightChanged");
         onCurrentTargetChanged = serializedObject.FindProperty("onCurrentTargetChanged");
     }
@@ -199,6 +210,7 @@ public class RoomInteractableEditor : Editor
             EditorGUI.indentLevel--;
         }
 
+        DrawUnlockSatisfiedEventSection();
         DrawRecordProgressMode(false);
 
         if (withDefault)
@@ -233,7 +245,12 @@ public class RoomInteractableEditor : Editor
                 DrawUnlockConditions();
                 EditorGUI.indentLevel--;
             }
+        }
 
+        DrawUnlockSatisfiedEventSection();
+
+        if (useConditionalInteraction.boolValue)
+        {
             DrawDefaultInteractionSection();
         }
 
@@ -272,6 +289,68 @@ public class RoomInteractableEditor : Editor
         DrawNested(unlockConditions, "requiredInteractionProgresses", "互动完成条件", true);
         DrawNested(unlockConditions, "minimumCurrentSceneCompletionCount", "当前场景至少通关次数");
         DrawNested(unlockConditions, "requiredSceneCompletions", "指定场景通关条件", true);
+    }
+
+    private void DrawUnlockSatisfiedEventSection()
+    {
+        showUnlockSatisfiedEvent = EditorGUILayout.Foldout(showUnlockSatisfiedEvent, "解锁达成自动事件", true);
+        if (!showUnlockSatisfiedEvent)
+        {
+            return;
+        }
+
+        EditorGUI.indentLevel++;
+        EditorGUILayout.HelpBox("前置条件达成且未标记已处理时触发。玩家完成响应后，可在互动事件里绑定 RoomInteractable.MarkUnlockEventHandled()。", MessageType.None);
+        EditorGUILayout.PropertyField(enableUnlockSatisfiedEvent, new GUIContent("启用自动事件"));
+
+        if (enableUnlockSatisfiedEvent.boolValue)
+        {
+            EditorGUILayout.PropertyField(invokeUnlockEventIfAlreadySatisfiedOnEnable, new GUIContent("启用时已满足也触发"));
+            EditorGUILayout.PropertyField(invokeUnlockEventOnceWhileEnabled, new GUIContent("同次启用只触发一次"));
+            EditorGUILayout.PropertyField(unlockEventHandledProgressId, new GUIContent("已处理进度 ID"));
+            DrawConditionalInteractionHint();
+            DrawUnlockHandledProgressHint();
+            DrawUnlockConditionConfigurationHint();
+            EditorGUILayout.PropertyField(onUnlockConditionsSatisfied, new GUIContent("解锁达成事件"));
+        }
+
+        EditorGUI.indentLevel--;
+    }
+
+    private void DrawConditionalInteractionHint()
+    {
+        if (useConditionalInteraction.boolValue)
+        {
+            return;
+        }
+
+        EditorGUILayout.HelpBox("当前没有启用条件互动；自动事件不会触发。", MessageType.Warning);
+    }
+
+    private void DrawUnlockHandledProgressHint()
+    {
+        if (!string.IsNullOrWhiteSpace(unlockEventHandledProgressId.stringValue))
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(progressId.stringValue))
+        {
+            EditorGUILayout.HelpBox($"已处理进度 ID 留空时，会使用：{progressId.stringValue}.UnlockEventHandled", MessageType.Info);
+            return;
+        }
+
+        EditorGUILayout.HelpBox("当前无法解析已处理进度 ID。自动事件可以触发，但无法跨重新进入游戏关闭；请填写“已处理进度 ID”或主“进度 ID”。", MessageType.Warning);
+    }
+
+    private void DrawUnlockConditionConfigurationHint()
+    {
+        if (HasConfiguredUnlockConditions())
+        {
+            return;
+        }
+
+        EditorGUILayout.HelpBox("当前没有配置有效的解锁条件；自动事件不会触发。", MessageType.Warning);
     }
 
     private void DrawProgressFields()
@@ -314,6 +393,64 @@ public class RoomInteractableEditor : Editor
         {
             EditorGUILayout.PropertyField(property, new GUIContent(label), includeChildren);
         }
+    }
+
+    private bool HasConfiguredUnlockConditions()
+    {
+        if (unlockConditions == null)
+        {
+            return false;
+        }
+
+        SerializedProperty minimumCurrentSceneCompletionCount =
+            unlockConditions.FindPropertyRelative("minimumCurrentSceneCompletionCount");
+        if (minimumCurrentSceneCompletionCount != null && minimumCurrentSceneCompletionCount.intValue > 0)
+        {
+            return true;
+        }
+
+        return HasConfiguredProgressRequirements(unlockConditions.FindPropertyRelative("requiredInteractionProgresses")) ||
+               HasConfiguredSceneRequirements(unlockConditions.FindPropertyRelative("requiredSceneCompletions"));
+    }
+
+    private static bool HasConfiguredProgressRequirements(SerializedProperty requirements)
+    {
+        if (requirements == null || !requirements.isArray)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < requirements.arraySize; i++)
+        {
+            SerializedProperty requirement = requirements.GetArrayElementAtIndex(i);
+            SerializedProperty progressId = requirement.FindPropertyRelative("progressId");
+            if (progressId != null && !string.IsNullOrWhiteSpace(progressId.stringValue))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasConfiguredSceneRequirements(SerializedProperty requirements)
+    {
+        if (requirements == null || !requirements.isArray)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < requirements.arraySize; i++)
+        {
+            SerializedProperty requirement = requirements.GetArrayElementAtIndex(i);
+            SerializedProperty sceneName = requirement.FindPropertyRelative("sceneName");
+            if (sceneName != null && !string.IsNullOrWhiteSpace(sceneName.stringValue))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void ApplyModeDefaults()

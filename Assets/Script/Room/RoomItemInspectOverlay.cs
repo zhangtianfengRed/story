@@ -24,8 +24,9 @@ public class RoomItemInspectOverlay : MonoBehaviour
     public Vector2 referenceResolution = new Vector2(1920f, 1080f);
     public Color overlayColor = new Color(0.02f, 0.025f, 0.03f, 0.58f);
     public Color glassColor = new Color(1f, 1f, 1f, 0f);
-    public Vector2 previewRectSize = new Vector2(960f, 820f);
-    public Vector2 previewRectOffset = new Vector2(220f, 0f);
+    [Tooltip("预览区域的宽高比参考。实际宽度会填满屏幕，高度按这个比例自动计算。")]
+    public Vector2 previewRectSize = new Vector2(1920f, 1080f);
+    public Vector2 previewRectOffset = Vector2.zero;
 
     [Header("Info Text")]
     public Vector2 infoPanelSize = new Vector2(420f, 540f);
@@ -61,6 +62,8 @@ public class RoomItemInspectOverlay : MonoBehaviour
     [Tooltip("预览自动适配时保留的边距。数值越大，物品在预览里越小，可避免旋转后被裁剪。")]
     [Min(1f)]
     public float previewFitPadding = 1.7f;
+    [Tooltip("所有检视物体的默认构图偏移。正 X 会让物体默认显示在画面右侧，方便左侧显示描述。")]
+    public Vector3 previewDefaultOffset = new Vector3(0.55f, 0f, 0f);
     public Color previewBackgroundColor = new Color(0f, 0f, 0f, 0f);
 
     [Header("Input")]
@@ -82,6 +85,7 @@ public class RoomItemInspectOverlay : MonoBehaviour
     private CanvasGroup canvasGroup;
     private RectTransform infoPanelRect;
     private RectTransform previewHitRect;
+    private AspectRatioFitter previewAspectFitter;
     private RawImage previewImage;
     private TMP_Text titleText;
     private TMP_Text descriptionText;
@@ -204,6 +208,7 @@ public class RoomItemInspectOverlay : MonoBehaviour
 
         currentPreview = Instantiate(previewPrefab, previewPivot);
         currentPreview.name = previewPrefab.name + "_InspectPreview";
+        previewPivot.localPosition = Vector3.zero;
         currentPreview.transform.localPosition = Vector3.zero;
         currentPreview.transform.localRotation = Quaternion.identity;
         currentPreview.transform.localScale = Vector3.one;
@@ -215,9 +220,12 @@ public class RoomItemInspectOverlay : MonoBehaviour
         previewPivot.localScale = Vector3.one;
 
         FitPreviewObject(currentPreview, Mathf.Max(0.01f, scale));
-        currentPreview.transform.localPosition += localOffset;
+        previewPivot.localPosition = previewDefaultOffset + localOffset;
 
-        ConfigurePreviewCamera(Mathf.Max(0.2f, cameraDistance) * previewDistanceMultiplier, Mathf.Clamp(fieldOfView, 10f, 80f));
+        float resolvedFieldOfView = Mathf.Clamp(fieldOfView, 10f, 80f);
+        float requestedCameraDistance = Mathf.Max(0.2f, cameraDistance) * previewDistanceMultiplier;
+        float fittedCameraDistance = ResolveFittedPreviewCameraDistance(currentPreview, resolvedFieldOfView);
+        ConfigurePreviewCamera(Mathf.Max(requestedCameraDistance, fittedCameraDistance), resolvedFieldOfView);
         SetTexts(displayName, description);
         SetVisible(true);
         StoreCursorState();
@@ -289,6 +297,7 @@ public class RoomItemInspectOverlay : MonoBehaviour
         if (canvas != null)
         {
             ConfigureCanvasCamera();
+            ConfigurePreviewRect();
             return;
         }
 
@@ -325,11 +334,8 @@ public class RoomItemInspectOverlay : MonoBehaviour
         Image glass = CreateImage("Glass", canvasRect, glassColor);
         glass.raycastTarget = false;
         previewHitRect = glass.rectTransform;
-        previewHitRect.anchorMin = new Vector2(0.5f, 0.5f);
-        previewHitRect.anchorMax = new Vector2(0.5f, 0.5f);
-        previewHitRect.pivot = new Vector2(0.5f, 0.5f);
-        previewHitRect.anchoredPosition = previewRectOffset;
-        previewHitRect.sizeDelta = previewRectSize;
+        previewAspectFitter = glass.gameObject.AddComponent<AspectRatioFitter>();
+        ConfigurePreviewRect();
 
         previewImage = CreateRawImage("PreviewImage", previewHitRect);
         Stretch(previewImage.rectTransform);
@@ -439,9 +445,7 @@ public class RoomItemInspectOverlay : MonoBehaviour
     private Vector2Int ResolvePreviewTextureSize()
     {
         int longEdge = Mathf.Max(128, previewTextureSize);
-        float width = Mathf.Max(1f, previewRectSize.x);
-        float height = Mathf.Max(1f, previewRectSize.y);
-        float aspect = width / height;
+        float aspect = ResolvePreviewAspectRatio();
 
         if (aspect >= 1f)
         {
@@ -449,6 +453,40 @@ public class RoomItemInspectOverlay : MonoBehaviour
         }
 
         return new Vector2Int(Mathf.Max(128, Mathf.RoundToInt(longEdge * aspect)), longEdge);
+    }
+
+    private void ConfigurePreviewRect()
+    {
+        if (previewHitRect == null)
+        {
+            return;
+        }
+
+        previewHitRect.anchorMin = new Vector2(0f, 0.5f);
+        previewHitRect.anchorMax = new Vector2(1f, 0.5f);
+        previewHitRect.pivot = new Vector2(0.5f, 0.5f);
+        previewHitRect.anchoredPosition = new Vector2(0f, previewRectOffset.y);
+        previewHitRect.sizeDelta = Vector2.zero;
+        previewHitRect.offsetMin = new Vector2(0f, previewHitRect.offsetMin.y);
+        previewHitRect.offsetMax = new Vector2(0f, previewHitRect.offsetMax.y);
+
+        if (previewAspectFitter == null)
+        {
+            previewAspectFitter = previewHitRect.GetComponent<AspectRatioFitter>();
+        }
+
+        if (previewAspectFitter == null)
+        {
+            previewAspectFitter = previewHitRect.gameObject.AddComponent<AspectRatioFitter>();
+        }
+
+        previewAspectFitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
+        previewAspectFitter.aspectRatio = ResolvePreviewAspectRatio();
+    }
+
+    private float ResolvePreviewAspectRatio()
+    {
+        return Mathf.Max(0.01f, previewRectSize.x / Mathf.Max(1f, previewRectSize.y));
     }
 
     private Camera ResolveTargetCamera()
@@ -516,6 +554,59 @@ public class RoomItemInspectOverlay : MonoBehaviour
         {
             previewFillLight.cullingMask = 1 << previewLayerIndex;
         }
+    }
+
+    private float ResolveFittedPreviewCameraDistance(GameObject previewObject, float fieldOfView)
+    {
+        if (previewObject == null || previewStage == null)
+        {
+            return 0f;
+        }
+
+        Renderer[] renderers = previewObject.GetComponentsInChildren<Renderer>(true);
+        if (renderers.Length == 0)
+        {
+            return 0f;
+        }
+
+        float verticalTan = Mathf.Tan(fieldOfView * 0.5f * Mathf.Deg2Rad);
+        float aspect = ResolvePreviewAspectRatio();
+        float horizontalTan = verticalTan * aspect;
+        float requiredDistance = 0f;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer == null)
+            {
+                continue;
+            }
+
+            Bounds bounds = renderer.bounds;
+            Vector3 min = bounds.min;
+            Vector3 max = bounds.max;
+
+            for (int x = 0; x <= 1; x++)
+            {
+                for (int y = 0; y <= 1; y++)
+                {
+                    for (int z = 0; z <= 1; z++)
+                    {
+                        Vector3 worldPoint = new Vector3(
+                            x == 0 ? min.x : max.x,
+                            y == 0 ? min.y : max.y,
+                            z == 0 ? min.z : max.z);
+                        Vector3 localPoint = previewStage.InverseTransformPoint(worldPoint);
+
+                        float horizontalDistance = Mathf.Abs(localPoint.x) / horizontalTan - localPoint.z;
+                        float verticalDistance = Mathf.Abs(localPoint.y) / verticalTan - localPoint.z;
+                        requiredDistance = Mathf.Max(requiredDistance, horizontalDistance, verticalDistance);
+                    }
+                }
+            }
+        }
+
+        return Mathf.Max(0.2f, requiredDistance * 1.08f);
     }
 
     private void FitPreviewObject(GameObject previewObject, float scale)

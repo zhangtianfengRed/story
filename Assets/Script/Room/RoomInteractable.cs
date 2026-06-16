@@ -252,12 +252,28 @@ public class RoomInteractable : MonoBehaviour
     public RoomInteractionUnlockConditions unlockConditions = new RoomInteractionUnlockConditions();
     public RoomInteractionVariant defaultInteraction = new RoomInteractionVariant();
 
+    [Header("Unlock Satisfied Event")]
+    [Tooltip("开启后，当前置解锁条件达成且尚未处理时，会自动触发一次事件。")]
+    public bool enableUnlockSatisfiedEvent;
+    [Tooltip("启用组件时如果条件已经满足且尚未处理，是否立刻补触发。适合玩家未接电话就退出后，再进游戏继续响铃。")]
+    public bool invokeUnlockEventIfAlreadySatisfiedOnEnable = true;
+    [Tooltip("同一次组件启用周期内只触发一次。退出再进后，如果尚未标记已处理，可以再次触发。")]
+    public bool invokeUnlockEventOnceWhileEnabled = true;
+    [Tooltip("独立记录自动解锁事件是否已处理的进度 ID。留空时使用 progressId + \".UnlockEventHandled\"。")]
+    public string unlockEventHandledProgressId;
+    [Tooltip("前置解锁条件达成且未处理时触发。可用于播放电话铃、显示提示或开启场景对象。")]
+    public UnityEvent onUnlockConditionsSatisfied = new UnityEvent();
+
     [Header("State Events")]
     public RoomBoolEvent onHighlightChanged = new RoomBoolEvent();
     public RoomBoolEvent onCurrentTargetChanged = new RoomBoolEvent();
 
     private bool isHighlighted;
     private bool isCurrentTarget;
+    private bool unlockConditionsWereSatisfied;
+    private bool hasInitializedUnlockConditionState;
+    private bool hasInvokedUnlockSatisfiedEventWhileEnabled;
+    private bool isSubscribedToProgressChanges;
 
     private void Reset()
     {
@@ -315,12 +331,17 @@ public class RoomInteractable : MonoBehaviour
         {
             activeInteractables.Add(this);
         }
+
+        ResetUnlockSatisfiedEventRuntimeState();
+        RefreshUnlockSatisfiedEvent(true);
     }
 
     private void OnDisable()
     {
         activeInteractables.Remove(this);
         SetHighlightState(false, false);
+        UnsubscribeUnlockProgressChanges();
+        ResetUnlockSatisfiedEventRuntimeState();
     }
 
     private void OnDestroy()
@@ -337,6 +358,11 @@ public class RoomInteractable : MonoBehaviour
 
         EnsureHighlightController();
         AssignDefaultHighlightOverlayMaterialIfNeeded();
+    }
+
+    private void Update()
+    {
+        RefreshUnlockSatisfiedEvent(false);
     }
 
     public float GetSqrDistanceTo(Vector3 worldPosition)
@@ -434,6 +460,39 @@ public class RoomInteractable : MonoBehaviour
     public bool IsPrimaryInteractionUnlocked()
     {
         return ResolveActiveInteractionMode() == ActiveInteractionMode.Primary;
+    }
+
+    public bool IsUnlockEventHandled()
+    {
+        string handledProgressId = ResolveUnlockEventHandledProgressId();
+        if (string.IsNullOrWhiteSpace(handledProgressId))
+        {
+            return false;
+        }
+
+        return RoomInteractionProgressManager.Instance.GetProgressCount(
+            handledProgressId,
+            RoomInteractionProgressCountType.Completion) >= 1;
+    }
+
+    public void MarkUnlockEventHandled()
+    {
+        string handledProgressId = ResolveUnlockEventHandledProgressId();
+        if (string.IsNullOrWhiteSpace(handledProgressId))
+        {
+            Debug.LogWarning($"[RoomInteractable] Unlock event handled progress ID is empty on {name}.", this);
+            return;
+        }
+
+        if (IsUnlockEventHandled())
+        {
+            return;
+        }
+
+        RoomInteractionProgressManager.Instance.MarkProgress(
+            handledProgressId,
+            RoomInteractionProgressCountType.Completion,
+            1);
     }
 
     public void RecordCompletionProgress()
@@ -534,6 +593,134 @@ public class RoomInteractable : MonoBehaviour
     private int ResolveCompletionTaskProgressIncrement()
     {
         return Mathf.Max(1, completionTaskProgressIncrement);
+    }
+
+    private void RefreshUnlockSatisfiedEvent(bool allowAlreadySatisfiedOnFirstCheck)
+    {
+        bool canEvaluate = CanEvaluateUnlockSatisfiedEvent();
+        UpdateUnlockProgressSubscription(canEvaluate);
+
+        if (!canEvaluate)
+        {
+            unlockConditionsWereSatisfied = false;
+            hasInitializedUnlockConditionState = false;
+            return;
+        }
+
+        bool wasInitialized = hasInitializedUnlockConditionState;
+        bool wasSatisfied = unlockConditionsWereSatisfied;
+        bool isSatisfied = unlockConditions.AreSatisfied();
+
+        hasInitializedUnlockConditionState = true;
+        unlockConditionsWereSatisfied = isSatisfied;
+
+        if (!isSatisfied || IsUnlockEventHandled())
+        {
+            return;
+        }
+
+        if (invokeUnlockEventOnceWhileEnabled && hasInvokedUnlockSatisfiedEventWhileEnabled)
+        {
+            return;
+        }
+
+        bool becameSatisfied = wasInitialized && !wasSatisfied;
+        bool alreadySatisfiedOnFirstCheck =
+            !wasInitialized &&
+            allowAlreadySatisfiedOnFirstCheck &&
+            invokeUnlockEventIfAlreadySatisfiedOnEnable;
+
+        if (!becameSatisfied && !alreadySatisfiedOnFirstCheck)
+        {
+            return;
+        }
+
+        hasInvokedUnlockSatisfiedEventWhileEnabled = true;
+        onUnlockConditionsSatisfied.Invoke();
+    }
+
+    private bool CanEvaluateUnlockSatisfiedEvent()
+    {
+        return enableUnlockSatisfiedEvent &&
+               useConditionalInteraction &&
+               unlockConditions != null &&
+               unlockConditions.HasConfiguredRequirements();
+    }
+
+    private void UpdateUnlockProgressSubscription(bool shouldSubscribe)
+    {
+        if (shouldSubscribe)
+        {
+            SubscribeUnlockProgressChanges();
+            return;
+        }
+
+        UnsubscribeUnlockProgressChanges();
+    }
+
+    private void SubscribeUnlockProgressChanges()
+    {
+        if (isSubscribedToProgressChanges)
+        {
+            return;
+        }
+
+        RoomInteractionProgressManager.Instance.ProgressCountChanged += HandleUnlockProgressChanged;
+        isSubscribedToProgressChanges = true;
+    }
+
+    private void UnsubscribeUnlockProgressChanges()
+    {
+        if (!isSubscribedToProgressChanges)
+        {
+            return;
+        }
+
+        if (RoomInteractionProgressManager.Current != null)
+        {
+            RoomInteractionProgressManager.Current.ProgressCountChanged -= HandleUnlockProgressChanged;
+        }
+
+        isSubscribedToProgressChanges = false;
+    }
+
+    private void HandleUnlockProgressChanged(
+        string scopeId,
+        string changedProgressId,
+        RoomInteractionProgressCountType countType,
+        int previousCount,
+        int nextCount)
+    {
+        if (RoomInteractionProgressManager.Current != null &&
+            !string.Equals(scopeId, RoomInteractionProgressManager.Current.CurrentScopeId, System.StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        RefreshUnlockSatisfiedEvent(false);
+    }
+
+    private void ResetUnlockSatisfiedEventRuntimeState()
+    {
+        unlockConditionsWereSatisfied = false;
+        hasInitializedUnlockConditionState = false;
+        hasInvokedUnlockSatisfiedEventWhileEnabled = false;
+    }
+
+    private string ResolveUnlockEventHandledProgressId()
+    {
+        if (!string.IsNullOrWhiteSpace(unlockEventHandledProgressId))
+        {
+            return unlockEventHandledProgressId;
+        }
+
+        string resolvedProgressId = ResolveProgressId();
+        if (string.IsNullOrWhiteSpace(resolvedProgressId))
+        {
+            return string.Empty;
+        }
+
+        return resolvedProgressId + ".UnlockEventHandled";
     }
 
     private void ExecuteInteractionBehaviours(RoomInteractionContext context)

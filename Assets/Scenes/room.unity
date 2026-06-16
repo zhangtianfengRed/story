@@ -2255,6 +2255,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -19143,6 +19150,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -19421,6 +19435,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1001048042}
     m_Modifications:
+    - target: {fileID: 64830539626908336, guid: 38ed3402bbe478140ac71754fc3215f9, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7816337298860144586, guid: 38ed3402bbe478140ac71754fc3215f9, type: 3}
       propertyPath: m_Name
       value: Bed1_02
@@ -19553,6 +19571,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -23870,6 +23895,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -36935,7 +36967,8 @@ MonoBehaviour:
   highlightController: {fileID: 1625565775}
   autoFindHighlightController: 1
   interactionBehaviours: []
-  interactionActions: []
+  interactionActions:
+  - {fileID: 11400000, guid: 70b20ddfde33bdf4690d6603d32a150d, type: 2}
   primaryResumeOverride:
     saveResumeTransformOnInteract: 0
     resumeTransform: {fileID: 0}
@@ -36958,7 +36991,7 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
-  useConditionalInteraction: 1
+  useConditionalInteraction: 0
   unlockConditions:
     requiredInteractionProgresses: []
     minimumCurrentSceneCompletionCount: 0
@@ -36970,8 +37003,7 @@ MonoBehaviour:
       resumeTransform: {fileID: 0}
       saveRotation: 1
     interactionBehaviours: []
-    interactionActions:
-    - {fileID: 11400000, guid: 70b20ddfde33bdf4690d6603d32a150d, type: 2}
+    interactionActions: []
     onInteract:
       m_PersistentCalls:
         m_Calls: []
@@ -36981,6 +37013,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -37748,6 +37787,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -38955,6 +39001,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -39153,6 +39206,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -42674,6 +42734,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -46460,6 +46527,13 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
   onHighlightChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -49068,8 +49142,8 @@ MonoBehaviour:
   referenceResolution: {x: 1920, y: 1080}
   overlayColor: {r: 0.02, g: 0.025, b: 0.03, a: 0.58}
   glassColor: {r: 1, g: 1, b: 1, a: 0}
-  previewRectSize: {x: 960, y: 820}
-  previewRectOffset: {x: 220, y: 0}
+  previewRectSize: {x: 1920, y: 1080}
+  previewRectOffset: {x: 0, y: 0}
   infoPanelSize: {x: 420, y: 540}
   infoPanelOffset: {x: 96, y: 0}
   titleFontSize: 42
@@ -49086,6 +49160,7 @@ MonoBehaviour:
   previewDistance: 3
   previewDistanceMultiplier: 1.35
   previewFitPadding: 1.7
+  previewDefaultOffset: {x: 0.55, y: 0, z: 0}
   previewBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
   closeOnEscape: 1
   closeOnBackgroundClick: 0

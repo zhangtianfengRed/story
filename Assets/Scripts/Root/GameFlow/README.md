@@ -200,6 +200,28 @@ unlockConditions.requiredInteractionProgresses:
 - `interactionActions`
 - UnityEvent
 
+如果 B 解锁后需要自动触发表现，例如电话响铃：
+
+```text
+启用条件互动 = true
+解锁达成自动事件/启用自动事件 = true
+解锁达成自动事件/解锁达成事件 = 播放电话铃
+```
+
+玩家接电话或处理完这个提示后，在对应互动事件里绑定：
+
+```text
+RoomInteractable.MarkUnlockEventHandled()
+```
+
+它会通过 `RoomInteractionProgressManager` 写入当前 step 作用域下的完成进度。`已处理进度 ID` 留空时，会默认使用：
+
+```text
+进度 ID.UnlockEventHandled
+```
+
+这样玩家未接电话就退出，再进游戏还会继续响；玩家接过电话并标记已处理后，再进游戏不会重复响。清当前互动进度或清全部互动进度时，这个状态也会一起被清掉。
+
 ## 5. 互动后推进剧情
 
 互动进度只记录状态，不会自动推进主流程。

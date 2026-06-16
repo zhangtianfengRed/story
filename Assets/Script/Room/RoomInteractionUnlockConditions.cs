@@ -92,6 +92,17 @@ public class RoomInteractionUnlockConditions
         return true;
     }
 
+    public bool HasConfiguredRequirements()
+    {
+        if (minimumCurrentSceneCompletionCount > 0)
+        {
+            return true;
+        }
+
+        return HasConfiguredProgressRequirements(requiredInteractionProgresses) ||
+               HasConfiguredSceneRequirements(requiredSceneCompletions);
+    }
+
     private static bool AreProgressRequirementsSatisfied(RoomInteractionProgressRequirement[] requirements)
     {
         if (requirements == null)
@@ -111,6 +122,25 @@ public class RoomInteractionUnlockConditions
         return true;
     }
 
+    private static bool HasConfiguredProgressRequirements(RoomInteractionProgressRequirement[] requirements)
+    {
+        if (requirements == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < requirements.Length; i++)
+        {
+            RoomInteractionProgressRequirement requirement = requirements[i];
+            if (requirement != null && requirement.IsConfigured())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static bool AreSceneRequirementsSatisfied(RoomSceneCompletionRequirement[] requirements)
     {
         if (requirements == null)
@@ -128,5 +158,24 @@ public class RoomInteractionUnlockConditions
         }
 
         return true;
+    }
+
+    private static bool HasConfiguredSceneRequirements(RoomSceneCompletionRequirement[] requirements)
+    {
+        if (requirements == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < requirements.Length; i++)
+        {
+            RoomSceneCompletionRequirement requirement = requirements[i];
+            if (requirement != null && requirement.IsConfigured())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
