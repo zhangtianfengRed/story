@@ -92,13 +92,19 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
     public Vector3 capsuleSpreadStep = new Vector3(0.04f, 0f, 0.03f);
     [Tooltip("胶囊倒出时额外旋转多少度。")]
     public Vector3 capsulePourSpinEuler = new Vector3(0f, 0f, 220f);
+    [Tooltip("开启后，胶囊飞到终点时使用下面配置的本地欧拉角，而不是目标点旋转或额外旋转。")]
+    public bool overrideCapsuleEndLocalRotation;
+    [Tooltip("所有胶囊共用的终点本地欧拉角。")]
+    public Vector3 capsuleEndLocalEulerAngles = Vector3.zero;
+    [Tooltip("可选：逐颗胶囊的终点本地欧拉角。数量不足时使用上面的共用终点角度。")]
+    public Vector3[] capsuleEndLocalEulerAnglesByIndex;
     [Min(0.01f)]
     public float capsulePourDuration = 0.28f;
     [Min(0f)]
     public float capsulePourInterval = 0.05f;
 
     [Header("Completion")]
-    [Tooltip("胶囊全部倒出后，是否调用唯一的 CommandMouseInteractable.CompleteInteraction()。")]
+    [Tooltip("完成接口被调用时，是否调用唯一的 CommandMouseInteractable.CompleteInteraction()。")]
     public bool completeMouseInteractableOnFinished = true;
 
     [Header("Debug")]
@@ -132,6 +138,21 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
     private bool interactionCompleted;
     private bool isDraggingBottle;
     private bool prePourPositionApplied;
+
+    public bool AreCapsulesPoured
+    {
+        get { return capsulesPoured; }
+    }
+
+    public bool IsInteractionCompleted
+    {
+        get { return interactionCompleted; }
+    }
+
+    public Transform[] CapsuleTransforms
+    {
+        get { return capsuleTransforms; }
+    }
 
     private void Reset()
     {
@@ -268,6 +289,38 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
         {
             mouseInteractable.ResetCompletion();
         }
+    }
+
+    public void CompleteInteraction()
+    {
+        TryCompleteInteraction();
+    }
+
+    public bool TryCompleteInteraction()
+    {
+        if (interactionCompleted)
+        {
+            return false;
+        }
+
+        CompleteWholeInteraction();
+        return true;
+    }
+
+    public void CompleteFromCapsuleClick()
+    {
+        TryCompleteFromCapsuleClick();
+    }
+
+    public bool TryCompleteFromCapsuleClick()
+    {
+        if (!capsulesPoured)
+        {
+            LogDebug("Capsule click completion ignored because capsules have not been poured yet.");
+            return false;
+        }
+
+        return TryCompleteInteraction();
     }
 
     private void HandleCapClicked()
@@ -539,7 +592,6 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
 
         capsulesPoured = true;
         onCapsulesPoured.Invoke();
-        CompleteWholeInteraction();
         activeMotion = null;
     }
 
@@ -669,6 +721,11 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
 
     private Quaternion ResolveCapsuleTargetRotation(int index, Transform capsule)
     {
+        if (overrideCapsuleEndLocalRotation)
+        {
+            return Quaternion.Euler(ResolveCapsuleEndLocalEulerAngles(index));
+        }
+
         if (capsulePourTargets != null &&
             index < capsulePourTargets.Length &&
             capsulePourTargets[index] != null)
@@ -685,6 +742,17 @@ public class CommandMedicineBottleInteraction : MonoBehaviour
 
         Quaternion baseRotation = GetCapsuleInitialLocalRotation(index, capsule);
         return baseRotation * Quaternion.Euler(capsulePourSpinEuler);
+    }
+
+    private Vector3 ResolveCapsuleEndLocalEulerAngles(int index)
+    {
+        if (capsuleEndLocalEulerAnglesByIndex != null &&
+            index < capsuleEndLocalEulerAnglesByIndex.Length)
+        {
+            return capsuleEndLocalEulerAnglesByIndex[index];
+        }
+
+        return capsuleEndLocalEulerAngles;
     }
 
     private Vector3 GetCapsuleInitialLocalPosition(int index, Transform capsule)

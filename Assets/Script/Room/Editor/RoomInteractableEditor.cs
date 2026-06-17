@@ -26,6 +26,8 @@ public class RoomInteractableEditor : Editor
     private SerializedProperty onOpenProgressRecorded;
     private SerializedProperty completionTaskProgressIncrement;
     private SerializedProperty onCompletionTaskProgressRecorded;
+    private SerializedProperty completionInteractionMode;
+    private SerializedProperty completionInteractionThreshold;
     private SerializedProperty useConditionalInteraction;
     private SerializedProperty unlockConditions;
     private SerializedProperty defaultInteraction;
@@ -67,6 +69,8 @@ public class RoomInteractableEditor : Editor
         onOpenProgressRecorded = serializedObject.FindProperty("onOpenProgressRecorded");
         completionTaskProgressIncrement = serializedObject.FindProperty("completionTaskProgressIncrement");
         onCompletionTaskProgressRecorded = serializedObject.FindProperty("onCompletionTaskProgressRecorded");
+        completionInteractionMode = serializedObject.FindProperty("completionInteractionMode");
+        completionInteractionThreshold = serializedObject.FindProperty("completionInteractionThreshold");
         useConditionalInteraction = serializedObject.FindProperty("useConditionalInteraction");
         unlockConditions = serializedObject.FindProperty("unlockConditions");
         defaultInteraction = serializedObject.FindProperty("defaultInteraction");
@@ -368,6 +372,29 @@ public class RoomInteractableEditor : Editor
         EditorGUILayout.PropertyField(completionTaskProgressIncrement, new GUIContent("完成时增加次数"));
         EditorGUILayout.PropertyField(onCompletionTaskProgressRecorded, new GUIContent("完成进度写入后触发"));
 
+        EditorGUILayout.Space(4);
+        EditorGUILayout.LabelField("完成后互动", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(completionInteractionMode, new GUIContent("完成后互动模式"));
+        RoomInteractableCompletionMode mode = (RoomInteractableCompletionMode)completionInteractionMode.intValue;
+        if (mode != RoomInteractableCompletionMode.IgnoreCompletionProgress)
+        {
+            EditorGUILayout.PropertyField(completionInteractionThreshold, new GUIContent("完成判定次数"));
+            DrawCompletionInteractionHints(mode);
+        }
+    }
+
+    private void DrawCompletionInteractionHints(RoomInteractableCompletionMode mode)
+    {
+        if (string.IsNullOrWhiteSpace(progressId.stringValue))
+        {
+            EditorGUILayout.HelpBox("当前没有进度 ID，无法读取完成次数；完成后互动模式不会生效。", MessageType.Warning);
+        }
+
+        if (mode == RoomInteractableCompletionMode.UseDefaultInteraction &&
+            !HasConfiguredVariantInteraction(defaultInteraction))
+        {
+            EditorGUILayout.HelpBox("当前选择完成后走默认互动，但 defaultInteraction 没有配置；完成后会变成不可互动。", MessageType.Warning);
+        }
     }
 
     private void DrawAdvancedEvents()
@@ -451,6 +478,54 @@ public class RoomInteractableEditor : Editor
         }
 
         return false;
+    }
+
+    private static bool HasConfiguredVariantInteraction(SerializedProperty variant)
+    {
+        if (variant == null)
+        {
+            return false;
+        }
+
+        return HasAnyObjectReference(variant.FindPropertyRelative("interactionBehaviours")) ||
+               HasAnyObjectReference(variant.FindPropertyRelative("interactionActions")) ||
+               HasAnyPersistentEventCall(variant.FindPropertyRelative("onInteract")) ||
+               HasAnyPersistentEventCall(variant.FindPropertyRelative("onInteractWithPlayer")) ||
+               HasAnyPersistentEventCall(variant.FindPropertyRelative("onInteractWithTarget"));
+    }
+
+    private static bool HasAnyObjectReference(SerializedProperty items)
+    {
+        if (items == null || !items.isArray)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < items.arraySize; i++)
+        {
+            SerializedProperty item = items.GetArrayElementAtIndex(i);
+            if (item != null && item.objectReferenceValue != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasAnyPersistentEventCall(SerializedProperty unityEvent)
+    {
+        if (unityEvent == null)
+        {
+            return false;
+        }
+
+        SerializedProperty persistentCalls = unityEvent.FindPropertyRelative("m_PersistentCalls");
+        SerializedProperty calls = persistentCalls != null
+            ? persistentCalls.FindPropertyRelative("m_Calls")
+            : null;
+
+        return calls != null && calls.isArray && calls.arraySize > 0;
     }
 
     private void ApplyModeDefaults()

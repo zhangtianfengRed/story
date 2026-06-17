@@ -82,18 +82,31 @@ public class CommandMouseInteractionCompletionGroup : MonoBehaviour
 
     public void MarkItemCompleted(CommandMouseInteractable interactable)
     {
+        TryMarkItemCompleted(interactable);
+    }
+
+    public bool TryMarkItemCompleted(CommandMouseInteractable interactable)
+    {
         if (interactable == null || !IsRequiredInteractable(interactable))
         {
-            return;
+            return false;
         }
 
         if (!completedInteractables.Add(interactable))
         {
-            return;
+            CheckAllCompleted();
+            return false;
         }
 
         onItemCompleted.Invoke(interactable.gameObject);
         CheckAllCompleted();
+        return true;
+    }
+
+    public bool EvaluateCompletion()
+    {
+        CheckAllCompleted();
+        return IsAllCompleted;
     }
 
     public void ResetGroup()
@@ -229,7 +242,7 @@ public class CommandMouseInteractionCompletionGroup : MonoBehaviour
         onAllCompleted.Invoke();
     }
 
-    private bool IsRequiredInteractable(CommandMouseInteractable target)
+    public bool IsRequiredInteractable(CommandMouseInteractable target)
     {
         if (target == null || requiredInteractables == null)
         {

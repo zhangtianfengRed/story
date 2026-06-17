@@ -27,6 +27,13 @@ public enum RoomInteractableInspectorMode
     RecordAndAdvance = 5
 }
 
+public enum RoomInteractableCompletionMode
+{
+    IgnoreCompletionProgress = 0,
+    DisableInteraction = 1,
+    UseDefaultInteraction = 2
+}
+
 [System.Serializable]
 public class RoomInteractionResumeOverride
 {
@@ -246,6 +253,13 @@ public class RoomInteractable : MonoBehaviour
     [Tooltip("玩法完成进度写入成功时触发。可选，不配置则忽略。")]
     public UnityEvent onCompletionTaskProgressRecorded = new UnityEvent();
 
+    [Tooltip("玩法完成次数达到阈值后，这个房间互动入口如何响应。默认忽略完成进度，保持旧逻辑。")]
+    public RoomInteractableCompletionMode completionInteractionMode = RoomInteractableCompletionMode.IgnoreCompletionProgress;
+
+    [Min(1)]
+    [Tooltip("Completion 次数达到多少后应用上面的完成后互动模式。")]
+    public int completionInteractionThreshold = 1;
+
     [Header("Conditional Interaction")]
     [Tooltip("开启后：满足条件执行上面的主互动；不满足时执行下面的默认互动。")]
     public bool useConditionalInteraction;
@@ -355,6 +369,8 @@ public class RoomInteractable : MonoBehaviour
         {
             interactionRange = 0f;
         }
+
+        completionInteractionThreshold = Mathf.Max(1, completionInteractionThreshold);
 
         EnsureHighlightController();
         AssignDefaultHighlightOverlayMaterialIfNeeded();
@@ -495,6 +511,48 @@ public class RoomInteractable : MonoBehaviour
             1);
     }
 
+    public bool IsCompletionProgressSatisfied()
+    {
+        if (completionInteractionMode == RoomInteractableCompletionMode.IgnoreCompletionProgress)
+        {
+            return false;
+        }
+
+        string resolvedProgressId = ResolveProgressId();
+        if (string.IsNullOrWhiteSpace(resolvedProgressId))
+        {
+            return false;
+        }
+
+        return RoomInteractionProgressManager.Instance.GetProgressCount(
+            resolvedProgressId,
+            RoomInteractionProgressCountType.Completion) >= ResolveCompletionInteractionThreshold();
+    }
+
+    public void SetInteractable(bool value)
+    {
+        if (isInteractable == value)
+        {
+            return;
+        }
+
+        isInteractable = value;
+        if (!isInteractable)
+        {
+            SetHighlightState(false, false);
+        }
+    }
+
+    public void EnableInteraction()
+    {
+        SetInteractable(true);
+    }
+
+    public void DisableInteraction()
+    {
+        SetInteractable(false);
+    }
+
     public void RecordCompletionProgress()
     {
         string resolvedProgressId = ResolveProgressId();
@@ -508,6 +566,7 @@ public class RoomInteractable : MonoBehaviour
             resolvedProgressId,
             RoomInteractionProgressCountType.Completion,
             ResolveCompletionTaskProgressIncrement());
+        ClearHighlightIfCompletionDisablesInteraction();
         onCompletionTaskProgressRecorded.Invoke();
     }
 
@@ -532,6 +591,21 @@ public class RoomInteractable : MonoBehaviour
 
     private ActiveInteractionMode ResolveActiveInteractionMode()
     {
+        if (IsCompletionProgressSatisfied())
+        {
+            if (completionInteractionMode == RoomInteractableCompletionMode.UseDefaultInteraction)
+            {
+                return defaultInteraction != null && defaultInteraction.HasConfiguredInteraction()
+                    ? ActiveInteractionMode.Default
+                    : ActiveInteractionMode.None;
+            }
+
+            if (completionInteractionMode == RoomInteractableCompletionMode.DisableInteraction)
+            {
+                return ActiveInteractionMode.None;
+            }
+        }
+
         if (!useConditionalInteraction)
         {
             return ActiveInteractionMode.Primary;
@@ -593,6 +667,19 @@ public class RoomInteractable : MonoBehaviour
     private int ResolveCompletionTaskProgressIncrement()
     {
         return Mathf.Max(1, completionTaskProgressIncrement);
+    }
+
+    private int ResolveCompletionInteractionThreshold()
+    {
+        return Mathf.Max(1, completionInteractionThreshold);
+    }
+
+    private void ClearHighlightIfCompletionDisablesInteraction()
+    {
+        if (ResolveActiveInteractionMode() == ActiveInteractionMode.None)
+        {
+            SetHighlightState(false, false);
+        }
     }
 
     private void RefreshUnlockSatisfiedEvent(bool allowAlreadySatisfiedOnFirstCheck)

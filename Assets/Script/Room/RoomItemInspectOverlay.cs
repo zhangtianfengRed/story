@@ -64,6 +64,8 @@ public class RoomItemInspectOverlay : MonoBehaviour
     public float previewFitPadding = 1.7f;
     [Tooltip("所有检视物体的默认构图偏移。正 X 会让物体默认显示在画面右侧，方便左侧显示描述。")]
     public Vector3 previewDefaultOffset = new Vector3(0.55f, 0f, 0f);
+    [Tooltip("临时保留 PreviewKeyLight 但默认关闭，避免检视物体过亮。")]
+    public bool enablePreviewKeyLight;
     public Color previewBackgroundColor = new Color(0f, 0f, 0f, 0f);
 
     [Header("Input")]
@@ -400,6 +402,7 @@ public class RoomItemInspectOverlay : MonoBehaviour
         previewKeyLight = keyLightObject.AddComponent<Light>();
         previewKeyLight.type = LightType.Directional;
         previewKeyLight.intensity = 1.25f;
+        previewKeyLight.enabled = enablePreviewKeyLight;
 
         GameObject fillLightObject = new GameObject("PreviewFillLight");
         fillLightObject.transform.SetParent(previewStage, false);
@@ -548,6 +551,7 @@ public class RoomItemInspectOverlay : MonoBehaviour
         if (previewKeyLight != null)
         {
             previewKeyLight.cullingMask = 1 << previewLayerIndex;
+            previewKeyLight.enabled = enablePreviewKeyLight;
         }
 
         if (previewFillLight != null)
