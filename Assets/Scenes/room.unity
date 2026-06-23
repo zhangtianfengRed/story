@@ -2209,7 +2209,8 @@ MonoBehaviour:
   highlightController: {fileID: 100226249}
   autoFindHighlightController: 1
   interactionBehaviours: []
-  interactionActions: []
+  interactionActions:
+  - {fileID: 11400000, guid: 8e0bf0f9ef6a17944b56f067d11e068c, type: 2}
   primaryResumeOverride:
     saveResumeTransformOnInteract: 0
     resumeTransform: {fileID: 0}
@@ -2227,11 +2228,25 @@ MonoBehaviour:
   openProgressIncrement: 1
   onOpenProgressRecorded:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 100226248}
+        m_TargetAssemblyTypeName: RoomInteractable, Assembly-CSharp
+        m_MethodName: CompleteInteraction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   completionTaskProgressIncrement: 1
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 1
   unlockConditions:
     requiredInteractionProgresses:
@@ -2247,8 +2262,7 @@ MonoBehaviour:
       resumeTransform: {fileID: 0}
       saveRotation: 1
     interactionBehaviours: []
-    interactionActions:
-    - {fileID: 11400000, guid: 8e0bf0f9ef6a17944b56f067d11e068c, type: 2}
+    interactionActions: []
     onInteract:
       m_PersistentCalls:
         m_Calls: []
@@ -19323,6 +19337,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 1
   unlockConditions:
     requiredInteractionProgresses:
@@ -19747,6 +19763,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 1
   unlockConditions:
     requiredInteractionProgresses: []
@@ -24067,6 +24085,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 1
   unlockConditions:
     requiredInteractionProgresses:
@@ -24093,7 +24113,7 @@ MonoBehaviour:
     onInteractWithTarget:
       m_PersistentCalls:
         m_Calls: []
-  enableUnlockSatisfiedEvent: 0
+  enableUnlockSatisfiedEvent: 1
   invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
   invokeUnlockEventOnceWhileEnabled: 1
   unlockEventHandledProgressId: 
@@ -37204,6 +37224,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 0
   unlockConditions:
     requiredInteractionProgresses: []
@@ -37952,7 +37974,8 @@ MonoBehaviour:
   promptWorldOffset: {x: 0, y: 1.5, z: 0}
   highlightController: {fileID: 1659236329}
   autoFindHighlightController: 1
-  interactionBehaviours: []
+  interactionBehaviours:
+  - {fileID: 1659236331}
   interactionActions: []
   primaryResumeOverride:
     saveResumeTransformOnInteract: 1
@@ -39192,6 +39215,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 0
   unlockConditions:
     requiredInteractionProgresses: []
@@ -39394,6 +39419,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 1
   unlockConditions:
     requiredInteractionProgresses:
@@ -42923,6 +42950,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 0
   unlockConditions:
     requiredInteractionProgresses: []
@@ -45208,7 +45237,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1973980907
 Transform:
   m_ObjectHideFlags: 0
@@ -46741,6 +46770,8 @@ MonoBehaviour:
   onCompletionTaskProgressRecorded:
     m_PersistentCalls:
       m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
   useConditionalInteraction: 0
   unlockConditions:
     requiredInteractionProgresses: []

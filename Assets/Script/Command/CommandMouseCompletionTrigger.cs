@@ -51,7 +51,7 @@ public class CommandMouseCompletionTrigger : MonoBehaviour
     public UnityEvent onClick = new UnityEvent();
     [Tooltip("点击源触发后立即调用，并传入本次点击命中的 Collider。")]
     public CommandColliderEvent onClickCollider = new CommandColliderEvent();
-    [Tooltip("通用触发事件。在这里拖入具体玩法脚本，并选择它暴露的完成方法，例如 CompleteInteraction。")]
+    [Tooltip("完成触发成功后调用。点击触发和脚本主动调用 CompleteFromScript()/TriggerCompletion() 都会触发这里。")]
     public UnityEvent onTriggered = new UnityEvent();
 
     private CommandMouseInteractable subscribedClickSource;
@@ -89,20 +89,59 @@ public class CommandMouseCompletionTrigger : MonoBehaviour
 
     public void Trigger()
     {
-        TryTrigger(null);
+        TryTriggerInternal(null, true);
     }
 
     public void Trigger(Collider hitCollider)
     {
-        TryTrigger(hitCollider);
+        TryTriggerInternal(hitCollider, true);
     }
 
     public bool TryTrigger()
     {
-        return TryTrigger(null);
+        return TryTriggerInternal(null, true);
     }
 
     public bool TryTrigger(Collider hitCollider)
+    {
+        return TryTriggerInternal(hitCollider, true);
+    }
+
+    /// <summary>
+    /// 脚本主动触发完成，不调用 onClick/onClickCollider，只执行完成目标和 onTriggered。
+    /// 适合由 Timeline、动画事件、其它玩法脚本或 UnityEvent 主动调用。
+    /// </summary>
+    public void TriggerCompletion()
+    {
+        TryTriggerCompletion();
+    }
+
+    /// <summary>
+    /// 脚本主动尝试触发完成，不调用点击事件；返回本次是否成功完成。
+    /// </summary>
+    public bool TryTriggerCompletion()
+    {
+        return TryTriggerInternal(null, false);
+    }
+
+    /// <summary>
+    /// TriggerCompletion 的语义化别名。推荐在 UnityEvent 里选择这个方法，表示“由脚本主动完成”。
+    /// </summary>
+    public void CompleteFromScript()
+    {
+        TryTriggerCompletion();
+    }
+
+    /// <summary>
+    /// TryTriggerCompletion 的语义化别名；返回本次是否成功完成。
+    /// </summary>
+    public bool TryCompleteFromScript()
+    {
+        return TryTriggerCompletion();
+    }
+
+    // invokeClickEvents 为 false 时用于脚本主动完成，避免误触发点击表现逻辑。
+    private bool TryTriggerInternal(Collider hitCollider, bool invokeClickEvents)
     {
         ResolveReferences();
 
@@ -111,7 +150,10 @@ public class CommandMouseCompletionTrigger : MonoBehaviour
             return false;
         }
 
-        InvokeClickEvents(hitCollider);
+        if (invokeClickEvents)
+        {
+            InvokeClickEvents(hitCollider);
+        }
 
         bool hasCompletionTarget = false;
         bool completedAnyTarget = false;

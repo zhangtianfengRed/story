@@ -553,6 +553,23 @@ public class RoomInteractable : MonoBehaviour
         SetInteractable(false);
     }
 
+    /// <summary>
+    /// UnityEvent 用：把这个房间互动入口标记为玩法完成。
+    /// 内部仍然走 RecordCompletionProgress，不新增任何独立存储。
+    /// </summary>
+    public void CompleteInteraction()
+    {
+        RecordCompletionProgress();
+    }
+
+    /// <summary>
+    /// CompleteInteraction 的语义化别名。适合从其它脚本或通用触发器主动调用。
+    /// </summary>
+    public void CompleteFromScript()
+    {
+        CompleteInteraction();
+    }
+
     public void RecordCompletionProgress()
     {
         string resolvedProgressId = ResolveProgressId();
