@@ -78,7 +78,7 @@ MonoBehaviour:
     value: {r: 1, g: 1, b: 1, a: 1}
   hueShift:
     overrideState: 0
-    value: 0
+    value: 168
   saturation:
     overrideState: 1
     value: 5
