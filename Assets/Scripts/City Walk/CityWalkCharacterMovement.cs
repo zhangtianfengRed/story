@@ -8,12 +8,21 @@ using UnityEngine.InputSystem;
 /// City Walk 场景中的角色平面移动。
 /// A/D 控制世界 X 轴，W/S 控制世界 Z 轴。
 /// </summary>
+[RequireComponent(typeof(CharacterController))]
 public class CityWalkCharacterMovement : MonoBehaviour
 {
     private static readonly int WalkParameter = Animator.StringToHash("Walk");
 
     [SerializeField, Min(0f)]
     private float moveSpeed = 4f;
+
+    [Header("Grounding")]
+    [SerializeField]
+    [Tooltip("Small downward speed used while grounded so the controller stays attached to the road.")]
+    private float groundedVerticalSpeed = -2f;
+
+    [SerializeField, Min(0f)]
+    private float gravityMultiplier = 1f;
 
     [Header("Animation")]
     [SerializeField]
@@ -34,8 +43,13 @@ public class CityWalkCharacterMovement : MonoBehaviour
     [Tooltip("X is the maximum world X coordinate; Y is the maximum world Z coordinate.")]
     private Vector2 movementBoundsMax = new Vector2(5f, 5f);
 
+    private CharacterController characterController;
+    private float verticalSpeed;
+
     private void Awake()
     {
+        characterController = GetComponent<CharacterController>();
+
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>(true);
@@ -57,20 +71,40 @@ public class CityWalkCharacterMovement : MonoBehaviour
         Vector3 nextPosition = currentPosition + movement * (moveSpeed * Time.deltaTime);
         GetOrderedMovementBounds(out Vector2 boundsMin, out Vector2 boundsMax);
 
-        // Clamp after movement so the character can move back inward while it can
-        // never continue past any of the four X/Z boundaries.
+        // Clamp the desired position so the character can move back inward while
+        // it can never continue past any of the four X/Z boundaries.
         nextPosition.x = Mathf.Clamp(nextPosition.x, boundsMin.x, boundsMax.x);
         nextPosition.z = Mathf.Clamp(nextPosition.z, boundsMin.y, boundsMax.y);
-        transform.position = nextPosition;
 
-        Vector3 actualMovement = nextPosition - currentPosition;
-        UpdateMovementFacing(actualMovement);
+        UpdateVerticalSpeed();
 
-        bool isWalking = actualMovement.sqrMagnitude > 0.000001f;
+        // CharacterController.Move resolves collisions against the scene while
+        // preserving the existing world-space movement bounds.
+        Vector3 frameMotion = nextPosition - currentPosition;
+        frameMotion.y = verticalSpeed * Time.deltaTime;
+        characterController.Move(frameMotion);
+
+        Vector3 actualMovement = transform.position - currentPosition;
+        Vector3 actualPlanarMovement = actualMovement;
+        actualPlanarMovement.y = 0f;
+        UpdateMovementFacing(actualPlanarMovement);
+
+        bool isWalking = actualPlanarMovement.sqrMagnitude > 0.000001f;
         if (animator != null)
         {
             animator.SetBool(WalkParameter, isWalking);
         }
+    }
+
+    private void UpdateVerticalSpeed()
+    {
+        if (characterController.isGrounded && verticalSpeed < 0f)
+        {
+            verticalSpeed = Mathf.Min(0f, groundedVerticalSpeed);
+            return;
+        }
+
+        verticalSpeed += Physics.gravity.y * Mathf.Max(0f, gravityMultiplier) * Time.deltaTime;
     }
 
     private void UpdateMovementFacing(Vector3 movementDirection)
@@ -90,6 +124,8 @@ public class CityWalkCharacterMovement : MonoBehaviour
 
     private void OnDisable()
     {
+        verticalSpeed = 0f;
+
         if (animator != null)
         {
             animator.SetBool(WalkParameter, false);
@@ -107,6 +143,8 @@ public class CityWalkCharacterMovement : MonoBehaviour
         GetOrderedMovementBounds(out Vector2 boundsMin, out Vector2 boundsMax);
         movementBoundsMin = boundsMin;
         movementBoundsMax = boundsMax;
+        groundedVerticalSpeed = Mathf.Min(0f, groundedVerticalSpeed);
+        gravityMultiplier = Mathf.Max(0f, gravityMultiplier);
     }
 
     private void OnDrawGizmosSelected()
