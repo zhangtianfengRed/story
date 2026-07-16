@@ -1,0 +1,242 @@
+[
+  {
+    "id": "10001",
+    "arnenaID": "1001",
+    "arnenaLevel": "1",
+    "difficultLevel": "1",
+    "weight": "10",
+    "trophyCount": "1,25"
+  },
+  {
+    "id": "10002",
+    "arnenaID": "2002",
+    "arnenaLevel": "1",
+    "difficultLevel": "2",
+    "weight": "0",
+    "trophyCount": "1,25"
+  },
+  {
+    "id": "10003",
+    "arnenaID": "1002",
+    "arnenaLevel": "2",
+    "difficultLevel": "2",
+    "weight": "7",
+    "trophyCount": "25,75"
+  },
+  {
+    "id": "10004",
+    "arnenaID": "2004",
+    "arnenaLevel": "2",
+    "difficultLevel": "3",
+    "weight": "3",
+    "trophyCount": "25,75"
+  },
+  {
+    "id": "10005",
+    "arnenaID": "1003",
+    "arnenaLevel": "3",
+    "difficultLevel": "3",
+    "weight": "7",
+    "trophyCount": "75,100"
+  },
+  {
+    "id": "10006",
+    "arnenaID": "2006",
+    "arnenaLevel": "3",
+    "difficultLevel": "4",
+    "weight": "3",
+    "trophyCount": "75,100"
+  },
+  {
+    "id": "10007",
+    "arnenaID": "1004",
+    "arnenaLevel": "4",
+    "difficultLevel": "4",
+    "weight": "7",
+    "trophyCount": "100,200"
+  },
+  {
+    "id": "10008",
+    "arnenaID": "2008",
+    "arnenaLevel": "4",
+    "difficultLevel": "5",
+    "weight": "3",
+    "trophyCount": "100,200"
+  },
+  {
+    "id": "10009",
+    "arnenaID": "1005",
+    "arnenaLevel": "5",
+    "difficultLevel": "5",
+    "weight": "7",
+    "trophyCount": "200,400"
+  },
+  {
+    "id": "10010",
+    "arnenaID": "2010",
+    "arnenaLevel": "5",
+    "difficultLevel": "6",
+    "weight": "3",
+    "trophyCount": "200,400"
+  },
+  {
+    "id": "10011",
+    "arnenaID": "1006",
+    "arnenaLevel": "6",
+    "difficultLevel": "6",
+    "weight": "7",
+    "trophyCount": "400,800"
+  },
+  {
+    "id": "10012",
+    "arnenaID": "2012",
+    "arnenaLevel": "6",
+    "difficultLevel": "7",
+    "weight": "3",
+    "trophyCount": "400,800"
+  },
+  {
+    "id": "10013",
+    "arnenaID": "1007",
+    "arnenaLevel": "7",
+    "difficultLevel": "8",
+    "weight": "7",
+    "trophyCount": "800,1600"
+  },
+  {
+    "id": "10014",
+    "arnenaID": "2014",
+    "arnenaLevel": "7",
+    "difficultLevel": "9",
+    "weight": "3",
+    "trophyCount": "800,1600"
+  },
+  {
+    "id": "10015",
+    "arnenaID": "1008",
+    "arnenaLevel": "8",
+    "difficultLevel": "10",
+    "weight": "7",
+    "trophyCount": "1600,3200"
+  },
+  {
+    "id": "10016",
+    "arnenaID": "2016",
+    "arnenaLevel": "8",
+    "difficultLevel": "11",
+    "weight": "3",
+    "trophyCount": "1600,3200"
+  },
+  {
+    "id": "10017",
+    "arnenaID": "1009",
+    "arnenaLevel": "9",
+    "difficultLevel": "12",
+    "weight": "7",
+    "trophyCount": "3200,6400"
+  },
+  {
+    "id": "10018",
+    "arnenaID": "2018",
+    "arnenaLevel": "9",
+    "difficultLevel": "13",
+    "weight": "3",
+    "trophyCount": "3200,6400"
+  },
+  {
+    "id": "10019",
+    "arnenaID": "1010",
+    "arnenaLevel": "10",
+    "difficultLevel": "14",
+    "weight": "7",
+    "trophyCount": "6400,9600"
+  },
+  {
+    "id": "10020",
+    "arnenaID": "2020",
+    "arnenaLevel": "10",
+    "difficultLevel": "15",
+    "weight": "3",
+    "trophyCount": "6400,9600"
+  },
+  {
+    "id": "10021",
+    "arnenaID": "1011",
+    "arnenaLevel": "11",
+    "difficultLevel": "16",
+    "weight": "7",
+    "trophyCount": "9600,16000"
+  },
+  {
+    "id": "10022",
+    "arnenaID": "2022",
+    "arnenaLevel": "11",
+    "difficultLevel": "17",
+    "weight": "3",
+    "trophyCount": "9600,16000"
+  },
+  {
+    "id": "10023",
+    "arnenaID": "1012",
+    "arnenaLevel": "12",
+    "difficultLevel": "18",
+    "weight": "7",
+    "trophyCount": "16000,25600"
+  },
+  {
+    "id": "10024",
+    "arnenaID": "2024",
+    "arnenaLevel": "12",
+    "difficultLevel": "19",
+    "weight": "3",
+    "trophyCount": "16000,25600"
+  },
+  {
+    "id": "10025",
+    "arnenaID": "1013",
+    "arnenaLevel": "13",
+    "difficultLevel": "20",
+    "weight": "7",
+    "trophyCount": "25600,41600"
+  },
+  {
+    "id": "10026",
+    "arnenaID": "2026",
+    "arnenaLevel": "13",
+    "difficultLevel": "21",
+    "weight": "3",
+    "trophyCount": "25600,41600"
+  },
+  {
+    "id": "10027",
+    "arnenaID": "1014",
+    "arnenaLevel": "14",
+    "difficultLevel": "22",
+    "weight": "7",
+    "trophyCount": "41600,67200"
+  },
+  {
+    "id": "10028",
+    "arnenaID": "2028",
+    "arnenaLevel": "14",
+    "difficultLevel": "23",
+    "weight": "3",
+    "trophyCount": "41600,67200"
+  },
+  {
+    "id": "10029",
+    "arnenaID": "1015",
+    "arnenaLevel": "15",
+    "difficultLevel": "24",
+    "weight": "7",
+    "trophyCount": "67200,108000"
+  },
+  {
+    "id": "10030",
+    "arnenaID": "2030",
+    "arnenaLevel": "15",
+    "difficultLevel": "25",
+    "weight": "3",
+    "trophyCount": "67200,108000"
+  }
+]

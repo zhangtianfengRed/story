@@ -48,6 +48,9 @@ public class POLYGON_DogPrefabs : MonoBehaviour
 	static int DogCounter; // dog index no
 	static int counter; // current counter for dog attachment
 	private GUIStyle guiStyle = new GUIStyle(); // GUI style for overlay
+	[Header("Dog Selection")]
+	[Range(0, 27)]
+	public int StartingDog = 6; // Initial dog type index
 	[Header("Selection Keys")]
 	public KeyCode CycleDogUp = KeyCode.UpArrow; // Mouse Left-Click Attack
 	public KeyCode CycleDogDown = KeyCode.DownArrow; // Mouse Right-Click Attack
@@ -98,12 +101,12 @@ public class POLYGON_DogPrefabs : MonoBehaviour
 		AllDogAttach.Add(ZombieDoberman); //26
 		AllDogAttach.Add(ZombieGermanShepherd);//27
 		DogTransform = getDogName; // Set Dog Transform to Dogs
-		DogCounter = 6; // Set Dog counter to 0 on startup
+		DogCounter = Mathf.Clamp(StartingDog, 0, DogTransform.childCount - 1);
 		counter = 0; // Set attachment counter to 0 on startup
 		setInvisible(1);
-		if (CheckValid(DogTransform.GetChild(6).gameObject, AllDogAttach[0][0], 1)) // Check if Dog mesh is valid
+		if (CheckValid(DogTransform.GetChild(DogCounter).gameObject, AllDogAttach[0][0], 1)) // Check if Dog mesh is valid
 		{
-			DogTransform.GetChild(6).gameObject.SetActive(true);
+			DogTransform.GetChild(DogCounter).gameObject.SetActive(true);
 		}
 		if (CheckValid(DogTransform.GetChild(DogCounter).gameObject, AllDogAttach[0][0], 2)) // Check if Dog attachment is valid
 		{
