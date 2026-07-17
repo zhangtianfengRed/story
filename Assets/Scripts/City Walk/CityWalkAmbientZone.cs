@@ -48,6 +48,8 @@ public class CityWalkAmbientZone : MonoBehaviour
     private float currentFade;
     private float targetFade;
     private float nextRandomPlayTime = float.PositiveInfinity;
+    private bool hasBeenActivated;
+    private bool playbackActive;
 
     private bool IsPlayerInside => playerOverlapCount > 0;
 
@@ -86,7 +88,7 @@ public class CityWalkAmbientZone : MonoBehaviour
         currentFade = Mathf.MoveTowards(currentFade, targetFade, fadeStep);
         ApplyVolumes();
 
-        if (!IsPlayerInside)
+        if (!playbackActive)
         {
             StopLoopWhenFadedOut();
             return;
@@ -104,8 +106,10 @@ public class CityWalkAmbientZone : MonoBehaviour
         }
 
         playerOverlapCount++;
-        if (playerOverlapCount == 1)
+        if (playerOverlapCount == 1 && !hasBeenActivated)
         {
+            hasBeenActivated = true;
+            playbackActive = true;
             ActivateZone();
         }
     }
@@ -118,8 +122,9 @@ public class CityWalkAmbientZone : MonoBehaviour
         }
 
         playerOverlapCount = Mathf.Max(0, playerOverlapCount - 1);
-        if (playerOverlapCount == 0)
+        if (playerOverlapCount == 0 && playbackActive)
         {
+            playbackActive = false;
             DeactivateZone();
         }
     }
@@ -130,6 +135,7 @@ public class CityWalkAmbientZone : MonoBehaviour
         currentFade = 0f;
         targetFade = 0f;
         nextRandomPlayTime = float.PositiveInfinity;
+        playbackActive = false;
 
         if (loopSource != null)
         {
