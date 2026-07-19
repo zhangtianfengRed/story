@@ -31,6 +31,10 @@ public sealed class RoomDogAffectionInteraction : RoomInteractionBehaviour
     [Min(0.1f)]
     [SerializeField] private float animationFinishTimeout = 10f;
 
+    [Header("Dialogue Synchronization")]
+    [Tooltip("开启后，狗动画结束时会等待当前语音自然播放完毕，再恢复相机并完成互动。")]
+    [SerializeField] private bool waitForDialoguePlaybackBeforeCompleting = true;
+
     [Header("Events")]
     [SerializeField] private UnityEvent onInteractionStarted = new UnityEvent();
     [SerializeField] private UnityEvent onInteractionCompleted = new UnityEvent();
@@ -113,7 +117,26 @@ public sealed class RoomDogAffectionInteraction : RoomInteractionBehaviour
             yield break;
         }
 
+        if (waitForDialoguePlaybackBeforeCompleting)
+        {
+            yield return WaitForDialoguePlaybackToFinish();
+        }
+
         CompleteInteraction();
+    }
+
+    private static IEnumerator WaitForDialoguePlaybackToFinish()
+    {
+        DialogueSubtitleOverlay overlay = DialogueSubtitleOverlay.Instance;
+        if (overlay == null)
+        {
+            yield break;
+        }
+
+        while (overlay != null && overlay.IsPlaying)
+        {
+            yield return null;
+        }
     }
 
     private bool IsAnimatorInState(int stateHash)

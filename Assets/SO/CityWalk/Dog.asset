@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d35280b3b60943e3bb7c6ab4323e7b15, type: 3}
+  m_Name: Dog
+  m_EditorClassIdentifier: 
+  autoFindOverlay: 1
+  createOverlayWhenMissing: 1
+  voiceClip: {fileID: 8300000, guid: 682b50e87ff34714a88f3a5faefd4e8a, type: 3}
+  voiceVolume: 1
+  interruptCurrentPlayback: 1
+  respectGlobalSubtitleSetting: 1
+  subtitleInputMode: 0
+  fullSubtitleText: "\u55E8.\u5C0F\u5BB6\u4F19\uFF0C\u4F60\u600E\u4E48\u51FA\u73B0\u5728\u8FD9\u91CC\uFF1F"
+  fullTimingText: Well, hello there.What are you doing out here all by yourself?
+  preferredMaxCharactersPerCue: 42
+  autoDistributeUntimedCues: 1
+  fallbackSubtitleDuration: 3
+  subtitles: []
+  lockPlayerMovementWhilePlaying: 0
+  disableInteractorWhilePlaying: 0

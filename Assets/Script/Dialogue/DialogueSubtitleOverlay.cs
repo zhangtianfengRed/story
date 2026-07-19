@@ -20,6 +20,8 @@ public sealed class DialogueSubtitlePlaybackOptions
 [AddComponentMenu("Dialogue/对白字幕显示层")]
 public class DialogueSubtitleOverlay : MonoBehaviour
 {
+    private const string DefaultPrefabResourcePath = "UI/DialogueSubtitleOverlay";
+
     private sealed class RuntimeCue
     {
         public float startTime;
@@ -149,6 +151,14 @@ public class DialogueSubtitleOverlay : MonoBehaviour
         {
             Instance = existing;
             return existing;
+        }
+
+        DialogueSubtitleOverlay prefab = Resources.Load<DialogueSubtitleOverlay>(DefaultPrefabResourcePath);
+        if (prefab != null)
+        {
+            DialogueSubtitleOverlay created = Instantiate(prefab);
+            created.name = prefab.name;
+            return created;
         }
 
         GameObject overlayObject = new GameObject(nameof(DialogueSubtitleOverlay));
