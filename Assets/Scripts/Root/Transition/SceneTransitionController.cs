@@ -173,7 +173,7 @@ public class SceneTransitionController : MonoBehaviour
 
         yield return null;
         Debug.Log($"[{nameof(SceneTransitionController)}] Fade in from global overlay: {sceneName}");
-        yield return FadeRoutine(0f, fadeInDuration);
+        yield return FadeRoutine(0f, fadeInDuration, true);
         Debug.Log($"[{nameof(SceneTransitionController)}] Fade in complete: {sceneName}");
 
         transitionCoroutine = null;
@@ -186,7 +186,7 @@ public class SceneTransitionController : MonoBehaviour
         transitionCoroutine = null;
     }
 
-    private IEnumerator FadeRoutine(float targetAlpha, float duration)
+    private IEnumerator FadeRoutine(float targetAlpha, float duration, bool ignoreInitialFrameDelta = false)
     {
         EnsureOverlay();
 
@@ -206,9 +206,19 @@ public class SceneTransitionController : MonoBehaviour
         }
 
         float elapsed = 0f;
+        bool shouldIgnoreFrameDelta = ignoreInitialFrameDelta;
         while (elapsed < safeDuration)
         {
-            elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            // Loading can make the first post-load frame delta longer than the whole fade.
+            if (shouldIgnoreFrameDelta)
+            {
+                shouldIgnoreFrameDelta = false;
+            }
+            else
+            {
+                elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            }
+
             float t = Mathf.Clamp01(elapsed / safeDuration);
             canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, Mathf.SmoothStep(0f, 1f, t));
             yield return null;
