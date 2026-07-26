@@ -1,0 +1,193 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c1a8e3b95f9478e8fd52bd14ee4cf61, type: 3}
+  m_Name: OfficeComputerWorkday_One
+  m_EditorClassIdentifier: 
+  workdayId: Office.Computer.Workday.One
+  completedTitle: Workday Complete
+  completedBody: All scheduled cases have been filed. Reopen the terminal to review the workday.
+  cases:
+  - caseId: ExpenseApproval
+    mailProgressId: Office.Computer.Workday.One.ExpenseApproval.Mail
+    documentsProgressId: Office.Computer.Workday.One.ExpenseApproval.Documents
+    taskProgressId: Office.Computer.Workday.One.ExpenseApproval.Task
+    incorrectDecisionProgressId: Office.Computer.Workday.One.ExpenseApproval.DecisionErrors
+    mailTitle: Expense Claim Awaiting Review
+    mailBody: "From: Project Lead\nSubject: Client visit reimbursement\n\nPlease process the attached 6,800 CNY expense claim before the afternoon review. The client meeting happened last week, so this should be routine."
+    documentsTitle: Expense Claim E-047
+    documentsBody: "Claim amount: 6,800 CNY\nDepartment travel cap: 5,000 CNY\n\nInvoice date: 14 March\nClient visit date: 18 March\n\nRequired approval note: Any amount above the cap needs supporting documents and manager confirmation."
+    taskTitle: Decide How To Handle The Claim
+    taskBody: The amount exceeds the department cap and the invoice predates the stated visit. Choose the next action.
+    taskLockedMessage: Read the mail and review the attached documents before submitting a decision.
+    decisions:
+    - label: Approve the claim
+      isCorrect: 0
+      feedback: Approval would ignore both the cap and the date mismatch.
+    - label: Reject the claim
+      isCorrect: 0
+      feedback: The claim may be valid, but it needs clarification before a final rejection.
+    - label: Request supporting documents
+      isCorrect: 1
+      feedback: Correct. Ask for the travel proof and manager confirmation before processing the claim.
+    - label: Forward without review
+      isCorrect: 0
+      feedback: The initial reviewer still needs to identify the missing information.
+  - caseId: MeetingRoomBooking
+    mailProgressId: Office.Computer.Workday.One.MeetingRoomBooking.Mail
+    documentsProgressId: Office.Computer.Workday.One.MeetingRoomBooking.Documents
+    taskProgressId: Office.Computer.Workday.One.MeetingRoomBooking.Task
+    incorrectDecisionProgressId: Office.Computer.Workday.One.MeetingRoomBooking.DecisionErrors
+    mailTitle: Meeting Room Booking Request
+    mailBody: "From: Operations\nSubject: Thursday team review\n\nPlease confirm a two-hour booking for Conference Room B, 14:00 to 16:00. The room calendar was checked this morning."
+    documentsTitle: Conference Room B Calendar
+    documentsBody: "Thursday\n14:00 - 16:00: Available\nCapacity: 12\nRequired equipment: Video conference screen available\n\nNo booking conflict or special approval is recorded."
+    taskTitle: Process The Booking
+    taskBody: The requested time and equipment are available. Choose the next action.
+    taskLockedMessage: Read the request and review the room calendar before submitting a decision.
+    decisions:
+    - label: Approve the booking
+      isCorrect: 1
+      feedback: Correct. The booking meets the room and equipment requirements.
+    - label: Reject the booking
+      isCorrect: 0
+      feedback: There is no conflict that justifies rejecting this request.
+    - label: Request more documents
+      isCorrect: 0
+      feedback: The request already contains the necessary scheduling information.
+    - label: Forward without review
+      isCorrect: 0
+      feedback: This routine booking can be handled directly.
+  - caseId: SoftwareRenewal
+    mailProgressId: Office.Computer.Workday.One.SoftwareRenewal.Mail
+    documentsProgressId: Office.Computer.Workday.One.SoftwareRenewal.Documents
+    taskProgressId: Office.Computer.Workday.One.SoftwareRenewal.Task
+    incorrectDecisionProgressId: Office.Computer.Workday.One.SoftwareRenewal.DecisionErrors
+    mailTitle: Design Tool Renewal
+    mailBody: "From: Design Team\nSubject: Annual tool renewal\n\nThe team needs to renew 10 existing design-tool seats before Friday. Please process the standard renewal request."
+    documentsTitle: Renewal Summary R-118
+    documentsBody: "Requested seats: 10\nExisting active seats: 10\nAnnual cost: 12,000 CNY\nApproved budget line: Design Software 2026\n\nThe vendor and amount match the approved annual plan."
+    taskTitle: Process The Renewal
+    taskBody: The renewal matches the existing seat count and approved budget. Choose the next action.
+    taskLockedMessage: Read the request and review the renewal summary before submitting a decision.
+    decisions:
+    - label: Approve the renewal
+      isCorrect: 1
+      feedback: Correct. This is a budgeted renewal with no change in scope.
+    - label: Reject the renewal
+      isCorrect: 0
+      feedback: The documents support renewing the existing seats.
+    - label: Request more documents
+      isCorrect: 0
+      feedback: No additional approval evidence is needed for this standard renewal.
+    - label: Forward without review
+      isCorrect: 0
+      feedback: The request is already within the normal approval route.
+  - caseId: CourierInvoice
+    mailProgressId: Office.Computer.Workday.One.CourierInvoice.Mail
+    documentsProgressId: Office.Computer.Workday.One.CourierInvoice.Documents
+    taskProgressId: Office.Computer.Workday.One.CourierInvoice.Task
+    incorrectDecisionProgressId: Office.Computer.Workday.One.CourierInvoice.DecisionErrors
+    mailTitle: Monthly Courier Invoice
+    mailBody: "From: Admin Services\nSubject: June courier charges\n\nThe monthly delivery invoice is ready for routine processing. Please file the payment before the vendor close date."
+    documentsTitle: Courier Invoice C-216
+    documentsBody: "Invoice total: 1,240 CNY\nPurchase order: PO-2026-061\nService period: 1 June - 30 June\n\nThe total matches the delivery log and is below the monthly administrative-service limit."
+    taskTitle: Process The Invoice
+    taskBody: The invoice agrees with the purchase order and delivery log. Choose the next action.
+    taskLockedMessage: Read the request and review the invoice before submitting a decision.
+    decisions:
+    - label: Approve the invoice
+      isCorrect: 1
+      feedback: Correct. The routine invoice is supported by the purchase order and log.
+    - label: Reject the invoice
+      isCorrect: 0
+      feedback: The amount and service period have been verified.
+    - label: Request more documents
+      isCorrect: 0
+      feedback: The required documentation is already attached.
+    - label: Forward without review
+      isCorrect: 0
+      feedback: This invoice belongs in the normal processing route.
+  - caseId: TrainingRegistration
+    mailProgressId: Office.Computer.Workday.One.TrainingRegistration.Mail
+    documentsProgressId: Office.Computer.Workday.One.TrainingRegistration.Documents
+    taskProgressId: Office.Computer.Workday.One.TrainingRegistration.Task
+    incorrectDecisionProgressId: Office.Computer.Workday.One.TrainingRegistration.DecisionErrors
+    mailTitle: Required Safety Training
+    mailBody: "From: People Operations\nSubject: New-hire safety session\n\nPlease register four new employees for the next available mandatory safety-training session."
+    documentsTitle: Training Roster T-032
+    documentsBody: "Available session: 22 July, 10:00\nAvailable seats: 6\nRequested employees: 4\nCost per employee: 0 CNY\n\nAll four employees are listed as pending mandatory training."
+    taskTitle: Process The Registration
+    taskBody: The session has enough seats and is mandatory for every listed employee. Choose the next action.
+    taskLockedMessage: Read the request and review the training roster before submitting a decision.
+    decisions:
+    - label: Approve the registration
+      isCorrect: 1
+      feedback: Correct. The roster meets the session requirements.
+    - label: Reject the registration
+      isCorrect: 0
+      feedback: Mandatory training should not be rejected without a conflict.
+    - label: Request more documents
+      isCorrect: 0
+      feedback: The roster and available seats provide all required information.
+    - label: Forward without review
+      isCorrect: 0
+      feedback: This standard registration can be completed directly.
+  - caseId: VendorBankChange
+    mailProgressId: Office.Computer.Workday.One.VendorBankChange.Mail
+    documentsProgressId: Office.Computer.Workday.One.VendorBankChange.Documents
+    taskProgressId: Office.Computer.Workday.One.VendorBankChange.Task
+    incorrectDecisionProgressId: Office.Computer.Workday.One.VendorBankChange.DecisionErrors
+    mailTitle: Vendor Bank Detail Update
+    mailBody: "From: Procurement\nSubject: Urgent supplier payment update\n\nA supplier says its bank account has changed and asks that the next payment use the new details. Please update the record today."
+    documentsTitle: Vendor Profile V-084
+    documentsBody: "Current bank account: Ending 4821\nRequested bank account: Ending 9914\n\nAttached change form has no supplier stamp.\nThe contact email on the request differs from the email on the signed supplier agreement."
+    taskTitle: Decide How To Handle The Update
+    taskBody: The bank details conflict with the existing supplier record and the request has not been authenticated. Choose the next action.
+    taskLockedMessage: Read the request and review the supplier profile before submitting a decision.
+    decisions:
+    - label: Approve the update
+      isCorrect: 0
+      feedback: Updating payment details without verification creates a fraud risk.
+    - label: Reject the update
+      isCorrect: 0
+      feedback: The supplier may have a valid change; verification is needed before a final rejection.
+    - label: Request supporting documents
+      isCorrect: 1
+      feedback: Correct. Require a stamped change form and confirm through the contracted contact channel.
+    - label: Forward without review
+      isCorrect: 0
+      feedback: The discrepancy needs to be identified before it is passed on.
+  - caseId: AnonymousDataRequest
+    mailProgressId: Office.Computer.Workday.One.AnonymousDataRequest.Mail
+    documentsProgressId: Office.Computer.Workday.One.AnonymousDataRequest.Documents
+    taskProgressId: Office.Computer.Workday.One.AnonymousDataRequest.Task
+    incorrectDecisionProgressId: Office.Computer.Workday.One.AnonymousDataRequest.DecisionErrors
+    mailTitle: Fwd: Please Send The Staff List
+    mailBody: "From: Unknown Sender\nSubject: Director request - confidential\n\nI am collecting the current staff contact list for a director. Please send the spreadsheet directly to this address and do not include anyone else."
+    documentsTitle: Data Handling Policy D-009
+    documentsBody: "Employee contact lists are internal confidential data.\n\nExternal or unverified requests must be sent to Information Security through the approved escalation channel.\nDirect email disclosure is prohibited."
+    taskTitle: Decide How To Handle The Request
+    taskBody: The sender cannot be verified and asks to bypass normal disclosure controls. Choose the next action.
+    taskLockedMessage: Read the request and review the data handling policy before submitting a decision.
+    decisions:
+    - label: Send the staff list
+      isCorrect: 0
+      feedback: Sending internal contact data to an unverified address violates the policy.
+    - label: Reject and delete the mail
+      isCorrect: 0
+      feedback: The request should be preserved and escalated for review, not silently discarded.
+    - label: Request more documents
+      isCorrect: 0
+      feedback: The approved policy requires escalation, not a direct document request.
+    - label: Forward to Information Security
+      isCorrect: 1
+      feedback: Correct. Preserve the message and use the approved security escalation channel.

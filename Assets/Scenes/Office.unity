@@ -9457,6 +9457,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
       insertIndex: -1
       addedObject: {fileID: 256913115}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 256913118}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 256913117}
   m_SourcePrefab: {fileID: 100100000, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
 --- !u!1 &256913114 stripped
 GameObject:
@@ -9484,6 +9490,112 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &256913117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256913114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 256913118}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &256913118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256913114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &258032351
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9915,6 +10027,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 6257288708101613351, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
   m_PrefabInstance: {fileID: 268158009}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &273765361 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 44773335066581862, guid: 57ce83bc69a514362b9462d6a7e7af7e, type: 3}
+  m_PrefabInstance: {fileID: 1728729144}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &276927867
 PrefabInstance:
@@ -13483,7 +13600,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   triggerInteraction: 1
-  interactionKey: 101
+  interactionKey: 323
   promptUI: {fileID: 0}
   autoFindPromptUI: 1
   reticleImage: {fileID: 0}
@@ -13648,6 +13765,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dead053e1d3b349aeadbd6c657585980, type: 3}
+--- !u!1 &381262023 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6745699832771771805, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
+  m_PrefabInstance: {fileID: 567314459}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &382418304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19585,13 +19707,125 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6745699832771771805, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 567314465}
+    - targetCorrespondingSourceObject: {fileID: 6745699832771771805, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 567314464}
   m_SourcePrefab: {fileID: 100100000, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
 --- !u!4 &567314460 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6257288708101613351, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
   m_PrefabInstance: {fileID: 567314459}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &567314464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381262023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 567314465}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &567314465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381262023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &570288923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19671,6 +19905,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
       insertIndex: -1
       addedObject: {fileID: 570288925}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 570288928}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 570288927}
   m_SourcePrefab: {fileID: 100100000, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
 --- !u!1 &570288924 stripped
 GameObject:
@@ -19698,6 +19938,112 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &570288927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570288924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 570288928}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &570288928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570288924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &574653547
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21331,7 +21677,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3429166498574472903, guid: 8cdf10c65c0bd425992ba638b7b3536a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 751603045}
+    - targetCorrespondingSourceObject: {fileID: 3429166498574472903, guid: 8cdf10c65c0bd425992ba638b7b3536a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 751603044}
   m_SourcePrefab: {fileID: 100100000, guid: 8cdf10c65c0bd425992ba638b7b3536a, type: 3}
 --- !u!4 &619840679 stripped
 Transform:
@@ -25478,6 +25830,117 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 145945170779240739, guid: dead053e1d3b349aeadbd6c657585980, type: 3}
   m_PrefabInstance: {fileID: 749585465}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &751603040 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3429166498574472903, guid: 8cdf10c65c0bd425992ba638b7b3536a, type: 3}
+  m_PrefabInstance: {fileID: 619840678}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &751603044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751603040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 751603045}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &751603045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751603040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &753272874
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29338,6 +29801,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2976652329399080676, guid: 1e833f50bef21400f87fb92baab6db4a, type: 3}
   m_PrefabInstance: {fileID: 894417595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &899268766 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6745699832771771805, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
+  m_PrefabInstance: {fileID: 1613982893}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &900487979
 PrefabInstance:
@@ -34730,13 +35198,131 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6858824574621064445, guid: b66d2eaaf2f4a45fc982a41af966070a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1075416063}
+    - targetCorrespondingSourceObject: {fileID: 6858824574621064445, guid: b66d2eaaf2f4a45fc982a41af966070a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1075416062}
   m_SourcePrefab: {fileID: 100100000, guid: b66d2eaaf2f4a45fc982a41af966070a, type: 3}
 --- !u!4 &1075416060 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6081161528930879047, guid: b66d2eaaf2f4a45fc982a41af966070a, type: 3}
   m_PrefabInstance: {fileID: 1075416059}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1075416061 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6858824574621064445, guid: b66d2eaaf2f4a45fc982a41af966070a, type: 3}
+  m_PrefabInstance: {fileID: 1075416059}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1075416062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075416061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 1075416063}
+  autoFindHighlightController: 1
+  interactionBehaviours:
+  - {fileID: 2147000002}
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: Office.Computer.Workday.One
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1075416063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075416061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &1076121352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36137,76 +36723,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1408899238570591623, guid: 1ccba6008739340919e6546ecb175d6a, type: 3}
   m_PrefabInstance: {fileID: 1113779301}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1116358936
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1207317207}
-    m_Modifications:
-    - target: {fileID: 275662732035212030, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_Name
-      value: TeaCup_01
-      objectReference: {fileID: 0}
-    - target: {fileID: 275662732035212030, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_RootOrder
-      value: 166
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 9.162
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -5.316
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.243
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.4762133
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.8793298
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -123.123
-      objectReference: {fileID: 0}
-    - target: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
---- !u!4 &1116358937 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 619396027701893188, guid: e16851f6f190a4b1d91aeeaca85abc5a, type: 3}
-  m_PrefabInstance: {fileID: 1116358936}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1117833048
 PrefabInstance:
@@ -39487,7 +40003,6 @@ Transform:
   - {fileID: 2044095062}
   - {fileID: 1320012042}
   - {fileID: 1695862278}
-  - {fileID: 1116358937}
   - {fileID: 2012038843}
   - {fileID: 845558815}
   - {fileID: 416394827}
@@ -45898,6 +46413,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1460428174}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1460428177}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1460428176}
   m_SourcePrefab: {fileID: 100100000, guid: 55f5e9f261d28e54e9e9690a5bc00a67, type: 3}
 --- !u!1 &1460428173 stripped
 GameObject:
@@ -45925,6 +46446,112 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1460428176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460428173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 1460428177}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1460428177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460428173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &1464208580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51386,13 +52013,125 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6745699832771771805, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1613982899}
+    - targetCorrespondingSourceObject: {fileID: 6745699832771771805, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1613982898}
   m_SourcePrefab: {fileID: 100100000, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
 --- !u!4 &1613982894 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6257288708101613351, guid: eeaccda267f2d4366bb946003f145ee3, type: 3}
   m_PrefabInstance: {fileID: 1613982893}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1613982898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899268766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 1613982899}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1613982899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899268766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &1617160812
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54720,13 +55459,125 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 44773335066581862, guid: 57ce83bc69a514362b9462d6a7e7af7e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1728729150}
+    - targetCorrespondingSourceObject: {fileID: 44773335066581862, guid: 57ce83bc69a514362b9462d6a7e7af7e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1728729149}
   m_SourcePrefab: {fileID: 100100000, guid: 57ce83bc69a514362b9462d6a7e7af7e, type: 3}
 --- !u!4 &1728729145 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 852519195277902300, guid: 57ce83bc69a514362b9462d6a7e7af7e, type: 3}
   m_PrefabInstance: {fileID: 1728729144}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1728729149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273765361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66904670f3270884cadb3b7de2957046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorMode: 0
+  isInteractable: 1
+  detectionCenter: {fileID: 0}
+  interactionRange: 2
+  ignoreVerticalDistance: 1
+  promptText: "\u6309\u4E0B {key} \u8FDB\u884C\u4EA4\u4E92"
+  promptAnchor: {fileID: 0}
+  promptWorldOffset: {x: 0, y: 1.5, z: 0}
+  highlightController: {fileID: 1728729150}
+  autoFindHighlightController: 1
+  interactionBehaviours: []
+  interactionActions: []
+  primaryResumeOverride:
+    saveResumeTransformOnInteract: 0
+    resumeTransform: {fileID: 0}
+    saveRotation: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithPlayer:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteractWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+  progressId: 
+  openProgressIncrement: 1
+  onOpenProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionTaskProgressIncrement: 1
+  onCompletionTaskProgressRecorded:
+    m_PersistentCalls:
+      m_Calls: []
+  completionInteractionMode: 0
+  completionInteractionThreshold: 1
+  useConditionalInteraction: 0
+  unlockConditions:
+    requiredInteractionProgresses: []
+    minimumCurrentSceneCompletionCount: 0
+    requiredSceneCompletions: []
+  defaultInteraction:
+    promptTextOverride: 
+    resumeOverride:
+      saveResumeTransformOnInteract: 0
+      resumeTransform: {fileID: 0}
+      saveRotation: 1
+    interactionBehaviours: []
+    interactionActions: []
+    onInteract:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithPlayer:
+      m_PersistentCalls:
+        m_Calls: []
+    onInteractWithTarget:
+      m_PersistentCalls:
+        m_Calls: []
+  enableUnlockSatisfiedEvent: 0
+  invokeUnlockEventIfAlreadySatisfiedOnEnable: 1
+  invokeUnlockEventOnceWhileEnabled: 1
+  unlockEventHandledProgressId: 
+  onUnlockConditionsSatisfied:
+    m_PersistentCalls:
+      m_Calls: []
+  onHighlightChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCurrentTargetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1728729150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273765361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03b4439817149243b8fb197b61022cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightedObjects: []
+  highlightedBehaviours: []
+  deactivateHighlightedObjectsWhenInactive: 0
+  highlightRenderers: []
+  autoFindHighlightRenderers: 1
+  highlightedOverlayMaterial: {fileID: 2100000, guid: e29505163cf749a4a3ab60ac668898db, type: 2}
+  currentTargetObjects: []
+  currentTargetBehaviours: []
+  deactivateCurrentTargetObjectsWhenInactive: 0
+  currentTargetOverlayMaterial: {fileID: 0}
+  hideOnAwake: 1
 --- !u!1001 &1731037374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64635,99 +65486,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dead053e1d3b349aeadbd6c657585980, type: 3}
---- !u!1001 &2069071826
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8824562078369212568, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f43ee72df1a9d2b4fb2684f1d31fb9b6, type: 2}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.275
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.372
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2.4649
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.99987936
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.015532804
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -1.78
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -6249997161408995597, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f43ee72df1a9d2b4fb2684f1d31fb9b6, type: 2}
-    - target: {fileID: 919132149155446097, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_Name
-      value: sticky
-      objectReference: {fileID: 0}
-    - target: {fileID: 2174322672475947604, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f43ee72df1a9d2b4fb2684f1d31fb9b6, type: 2}
-    - target: {fileID: 2608993347980074590, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f43ee72df1a9d2b4fb2684f1d31fb9b6, type: 2}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 6929162089294532620, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-    - {fileID: -6353685956363996883, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-    - {fileID: 2649356680030222395, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-    - {fileID: -654027192946276339, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2de894486026bd54f85e628a087f3c3a, type: 3}
 --- !u!1001 &2069383750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -66923,6 +67681,35 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1001 &2147000000
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 243f1502759d4c3ca83d54540bee457b, type: 3}
+--- !u!1 &2147000001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 243f1502759d4c3ca83d54540bee457b, type: 3}
+  m_PrefabInstance: {fileID: 2147000000}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2147000002 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 100002, guid: 243f1502759d4c3ca83d54540bee457b, type: 3}
+  m_PrefabInstance: {fileID: 2147000000}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10cbec49ecd94402833a263b099cfb8d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -66937,9 +67724,9 @@ SceneRoots:
   - {fileID: 526932250}
   - {fileID: 1951219904}
   - {fileID: 687512036}
-  - {fileID: 2069071826}
   - {fileID: 653844709}
   - {fileID: 570288923}
   - {fileID: 1460428172}
   - {fileID: 256913113}
   - {fileID: 1037593305}
+  - {fileID: 2147000000}

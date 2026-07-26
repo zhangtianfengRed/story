@@ -1,8 +1,14 @@
-# Room And Command Interaction System Guide
+# Generic World And Command Interaction System Guide
 
-这份文档用于帮助下一次接手项目的 AI 或开发者快速理解房间交互系统。重点说明两套交互的边界：
+这份文档用于帮助下一次接手项目的 AI 或开发者快速理解通用互动系统。
 
-- `RoomInteractable`：玩家靠近物体后按交互键触发，负责房间级入口、提示、高亮、进度记录、条件解锁。
+`Room` 是这套系统最初在 Room 场景开发时留下的历史前缀，不代表它只能用于 Room。`RoomInteractable`、`RoomInteractionBehaviour`、`RoomInteractionProgressManager`、`RoomInteractionUnlockConditions` 等组件是全项目通用的世界互动、目标进度、条件解锁和继续位置系统；City Walk、Office、后续新场景和新玩法都应优先复用它们，而不是另起一套互动或存档链条。
+
+类名、文件名和 Inspector 字段保留 `Room` 前缀，是为了不破坏现有 Scene、Prefab、ScriptableObject 和序列化引用。新增功能遵循这套系统的职责边界即可，不需要为了通用性重命名旧代码。
+
+重点说明两套交互的边界：
+
+- `RoomInteractable`：玩家靠近世界物体后按交互键触发，负责通用世界互动入口、提示、高亮、进度记录、条件解锁。
 - `CommandMouseInteractable`：进入某个互动玩法后，用鼠标射线点击具体小道具，负责玩法内部的小物件选择、高亮、点击和完成状态。
 
 不要让 `RoomInteractable` 直接猜玩法内部有多少小道具完成。玩法内部如果有多个 `CommandMouseInteractable`，应该使用 `CommandMouseInteractionCompletionGroup` 收集它们的完成状态，全部完成后再回调外层 `RoomInteractable`。
@@ -15,6 +21,11 @@
 - `Assets/Script/Room/RoomInteractionProgressManager.cs`
 - `Assets/Script/Room/RoomInteractionProgressEventTrigger.cs`
 - `Assets/Script/Room/RoomInteractionUnlockConditions.cs`
+- `Assets/Scripts/Save/LocalSaveStore.cs`
+- `Assets/Scripts/Root/GameFlow/GameFlowManager.cs`
+- `Assets/Scripts/Root/GameFlow/GameFlowDefinition.cs`
+- `Assets/Scripts/Root/GameFlow/GameFlowSceneController.cs`
+- `Assets/Scripts/Root/Transition/SceneTransitionController.cs`
 - `Assets/Script/Room/RoomInteractionBehaviour.cs`
 - `Assets/Script/Room/RoomInteractionAction.cs`
 - `Assets/Script/Room/RoomTopDownPlayerMovementControlSetter.cs`
@@ -26,6 +37,35 @@
 - `Assets/Script/Command/CommandDisableTopDownPlayerMovementControl.cs`
 - `Assets/Script/Command/CommandToothbrushSwipeInteraction.cs`
 - `Assets/Script/Command/CommandMedicineBottleInteraction.cs`
+
+## 文档与源码的优先级
+
+本文档用于说明职责、标准链条和搭建规范；它不是对运行时细节的替代。出现下面任一情况时，不要根据流程图猜测，直接打开对应的权威源码或场景配置确认：
+
+- 文档描述与 Inspector 现有绑定看起来不一致。
+- 需要知道某个事件的准确调用顺序、是否自动记录 Open/Completion、是否会重复触发。
+- 要扩展存档格式、恢复状态、解锁条件或场景切换。
+- 要修改一个已有案例，而不是新搭建玩法。
+
+下表是“功能问题 -> 优先查看的真实文件”的索引。除非修改框架本身，不需要在这里以外做全项目搜索。
+
+| 想确认什么 | 权威代码 / 配置 | 先看哪些内容 |
+| --- | --- | --- |
+| 世界物体如何被发现、按键后执行什么、何时记录 Open | `Assets/Script/Room/RoomInteractable.cs` | `Interact`、`ExecutePrimaryInteraction`、`RecordOpenProgressIfNeeded`、`CompleteFromScript` |
+| 玩家如何选中最近目标、显示提示和交互键 | `Assets/Script/Room/RoomPlayerInteractor.cs`、`Assets/Script/Room/RoomInteractionPromptUI.cs` | `Update`、目标刷新、`Interact` 调用位置 |
+| 自定义场景行为怎样接入世界互动 | `Assets/Script/Room/RoomInteractionBehaviour.cs`、`Assets/Script/Room/RoomInteractionContext.cs`、`Assets/Script/Room/RoomInteractionAction.cs` | `Execute(RoomInteractionContext)`、场景组件与 ScriptableObject 的边界 |
+| 进度按什么作用域保存、保存了哪些字段、写入时机 | `Assets/Script/Room/RoomInteractionProgressManager.cs` | `ResolveCurrentScopeId`、`MarkProgress`、`SaveProgress`、`LoadProgress` |
+| 本地存档底层 Key 和 JSON 如何写入 | `Assets/Scripts/Save/LocalSaveStore.cs` | `Keys`、`SaveJson`、`TryLoadJson`；业务玩法不要直接调用 `PlayerPrefs` |
+| 某互动何时解锁、完成后是否禁用、默认互动是否执行 | `Assets/Script/Room/RoomInteractionUnlockConditions.cs`、`Assets/Script/Room/RoomInteractable.cs` | `AreSatisfied`、`ResolveActiveInteractionMode`、`completionInteractionMode` |
+| 进度变化怎样驱动 Timeline、显隐或其它对象 | `Assets/Script/Room/RoomInteractionProgressEventTrigger.cs` | `HandleProgressChanged`、`invokeIfAlreadySatisfiedOnEnable` |
+| 主剧情步骤、完成步骤和 Scene 选择 | `Assets/Scripts/Root/GameFlow/GameFlowManager.cs`、`Assets/Scripts/Root/GameFlow/GameFlowDefinition.cs`、`Assets/Resources/GameFlow/Game Flow Definition.asset` | `CompleteCurrentStepAndLoadNext`、`JumpToStep`、`stepId`、`contentKey` |
+| 切场景是否会走统一淡出淡入 | `Assets/Scripts/Root/Transition/SceneTransitionController.cs` | `LoadScene`、`LoadSceneRoutine`；不要直接绕过它调用 `SceneManager.LoadScene` |
+| 玩法内部的 3D 鼠标小物件和全部完成判断 | `Assets/Script/Command/CommandMouseInteractable.cs`、`Assets/Script/Command/CommandMouseInteractionCompletionGroup.cs` | `CompleteInteraction`、`onCompleted`、`onAllCompleted` |
+| Office 电脑 UI 的打开、关闭、输入屏蔽、窗口切换和工作日案件推进 | `Assets/Script/Room/RoomComputerScreenController.cs`、`Assets/Script/Office/Computer/OfficeComputerWorkdayDefinition.cs`、`Assets/Script/Room/RoomFirstPersonCameraInteractor.cs`、`Assets/Resources/UI/OfficeComputerScreenUI.prefab`、`Assets/SO/Office/Computer/` | `Execute`、`Open`、`ShowInbox`、`ShowDocuments`、`ShowTasks`、`SelectDecision`，以及 Workday SO 的 `cases` |
+| Dog 与 Door 这两个已存在案例到底何时完成 | `Assets/Script/Room/RoomDogAffectionInteraction.cs`、`Assets/Script/Room/RoomCompleteInteractionAction.cs`、`Assets/Scenes/city walk.unity`、`Assets/SO/CityWalk/Door_1.asset`、`Assets/SO/CityWalk/Dog.asset`、`Assets/SO/CityWalk/_Done.asset` | Dog 的 `CompleteInteraction` 与 Door 的 `_Done` Action；以 Scene 里的 `progressId` 和 `completionInteractionMode` 为准 |
+| Play Mode 测试时如何清除当前互动进度 | `Assets/Script/Room/Editor/RoomInteractionProgressDebugTools.cs` | Unity 菜单 `Tools/互动测试/清除当前 Scene 的互动进度` |
+
+场景、Prefab、ScriptableObject 里的 Inspector 绑定也是运行时行为的一部分。改已有功能时，先看这张表定位脚本，再看对应 Scene/Prefab/Asset 的序列化配置；不要只根据同名脚本推断当前对象一定用了它。
 
 ## 总体流程
 
@@ -197,6 +237,152 @@ flowchart TD
 - `ClearCurrentProgress()`
 
 `RoomInteractionProgressEventTrigger` 可以监听某个 `progressId` 达到指定次数后触发事件，适合把 Timeline、显隐物体、流程跳转等表现逻辑挂回场景对象。
+
+## 玩法进度与存档：后续功能只读这一节
+
+这一节是后续新增“完整玩法”的接入约定。电脑、开锁、整理文件、检查物品等，凡是有多个目标、允许中途退出、并且需要下次启动后恢复进度的功能，都按这里处理。
+
+### 三层状态不要混用
+
+| 状态层 | 使用的系统 | 保存内容 | 适用范围 |
+| --- | --- | --- | --- |
+| 主剧情步骤 | `GameFlowManager` | 当前 `stepId`、已完成的 `stepId` | 决定加载哪个 Scene、显示哪个 `contentKey` |
+| 场景通关 | `GameProgressManager` | 每个 Scene 的通关次数 | 首次进入、场景整体通关条件 |
+| 房间互动与玩法目标 | `RoomInteractionProgressManager` | 每个 `progressId` 的 Open/Completion 次数、继续位置 | 单个入口、子目标、条件解锁、玩法恢复 |
+
+新玩法的内部目标必须使用第三层。不要把玩法目标写到 `GameProgressManager`，也不要直接调用 `PlayerPrefs` 或 `LocalSaveStore` 新建临时 Key。
+
+`RoomInteractionProgressManager` 已经会在每次变化后立即通过 `LocalSaveStore` 写入：
+
+- 存档 Key：`save.game.roomInteractionProgress`
+- 底层：当前是 `PlayerPrefs` + JSON；业务脚本不直接接触它。
+- 作用域：优先为 `step:<GameFlow stepId>`；没有有效 GameFlow 时才是 `scene:<SceneName>`。
+- 每个 `progressId` 持久化两种计数：`openCount` 与 `completionCount`。
+- 同一作用域还会保存 `RoomInteractionResumeState`，只包含玩家位置和朝向。
+
+这意味着：切场景、退出游戏、重新启动后，玩法目标计数会恢复；但普通 MonoBehaviour 字段、UI 激活状态、按钮选中状态不会自动恢复，玩法控制器必须在打开时用进度管理器重新构建自己的显示状态。
+
+### 当前真实调用链
+
+```mermaid
+flowchart TD
+    A["玩家触发 RoomInteractable"] --> B["执行 Behaviour / Action / UnityEvent"]
+    B --> C["主互动成功路径自动记录 progressId.Open"]
+    B --> D["玩法控制器或内部互动"]
+    D --> E["目标达成时 MarkCompleted(子目标 ID)"]
+    E --> F["RoomInteractionProgressManager"]
+    F --> G["LocalSaveStore.SaveJson"]
+    G --> H["save.game.roomInteractionProgress"]
+    E --> I["ProgressCountChanged"]
+    I --> J["条件解锁 / RoomInteractionProgressEventTrigger / UI 刷新"]
+    D --> K{"所有必需目标完成？"}
+    K -->|是| L["入口 RoomInteractable.CompleteFromScript()"]
+    L --> M["主入口 progressId.Completion"]
+```
+
+`RoomInteractable` 的执行顺序是：`interactionBehaviours`、`interactionActions`、三个 UnityEvent、自动记录 Open、可选继续位置。它不会自动知道玩法内部是否已经通关；玩法控制器必须在真正完成时显式调用外层入口的 `CompleteFromScript()` 或 `RecordCompletionProgress()`。
+
+### Open、Completion 和重复调用规则
+
+- `Open`：玩家从房间入口走主互动真正进入/打开玩法一次。主互动的 `RoomInteractable.progressId` 非空时会自动记录；条件不满足时执行的 `defaultInteraction` 不会自动增加 Open。
+- `Completion`：玩法达成设计目标一次。只能在玩法的成功出口记录。
+- `MarkCompleted` 是累加，不是布尔赋值。可重复点击的确认按钮必须先判断该目标是否已完成，避免重复加计数。
+- 单次目标：`GetCompletionCount(id) >= 1` 或 `IsCompleted(id)` 表示已完成。
+- “阅读过邮件”这类只要打开即可达成的目标，可以记录 `MarkOpened(子目标 ID)`；真正处理完成、提交、确认的目标使用 `MarkCompleted(子目标 ID)`。
+
+### 现有 Door 和 Dog 为什么行为不同
+
+这两个都是正确使用同一存档链条的案例，区别只在“何时写入 Completion”。
+
+| 入口 | 入口进度 ID | 完成发生位置 | 重启后不可再互动的原因 |
+| --- | --- | --- | --- |
+| `city walk/Building_10/Door_1` | `CityWalk.Door1` | 依次执行 `Door_1.asset` 的对白 Action 和 `_Done.asset` 的 `RoomCompleteInteractionAction`，本次按键内立即完成 | `completionInteractionMode = DisableInteraction`，读取到 Completion >= 1 后入口不可检测 |
+| Dog | `CityWalk.DogAffection` | `RoomDogAffectionInteraction` 等动画和对白结束，再调用 `roomInteractable.CompleteFromScript()` | 同样是 DisableInteraction；完成记录会保存在当前作用域，重启后仍生效 |
+
+`_Done.asset` 不是独立存档方案，它只是通用的 `RoomCompleteInteractionAction`，最后仍会调用 `RoomInteractable.CompleteInteraction()`，进入同一个 `RoomInteractionProgressManager`。
+
+### 新增“一个入口、多个玩法目标”的标准搭建
+
+以 Office 电脑为例，推荐拆成一个主入口和多个内部目标：
+
+| 角色 | 推荐 ID | 何时记录 | 用途 |
+| --- | --- | --- | --- |
+| 电脑入口 | `Office.Computer` | 按入口互动时自动记 Open；全部工作完成时记 Completion | 控制电脑是否能再次进入、驱动大剧情 |
+| 邮件工作 | `Office.Computer.Mail` | 玩家提交正确处理结果时 `MarkCompleted` | 恢复邮件工作状态、解锁后续目标 |
+| 文件工作 | `Office.Computer.Documents` | 玩家确认文件核对完成时 `MarkCompleted` | 恢复文件工作状态、解锁后续目标 |
+| 排程工作 | `Office.Computer.Schedule` | 玩家提交排程时 `MarkCompleted` | 恢复排程工作状态、作为总完成条件 |
+
+ID 使用 `SceneOrFeature.System.Target` 的命名方式，保持稳定。已经进入存档的 ID 不要改名；改名会被视为一个新的未完成目标。
+
+电脑控制器的职责应当是：
+
+1. 通过 `RoomInteractionBehaviour.Execute(RoomInteractionContext)` 从电视入口打开 UI，并缓存 `context.Interactable` 作为外层入口。
+2. 每次打开 UI 时读取 `RoomInteractionProgressManager.Instance.GetCompletionCount(...)`，设置各个静态 UI 对象的可见状态、按钮状态和已完成提示。不要只依赖上一次运行时留在内存里的 bool。
+3. 某个工作确认成功时，若该子目标尚未完成，调用 `MarkCompleted(对应 ID)`；随后刷新 UI。
+4. 检查所有必需子目标均为 Completion >= 1 后，只调用一次缓存入口的 `CompleteFromScript()`。
+5. 主入口的 `completionInteractionMode` 按设计选择：一次性玩法用 `DisableInteraction`；完成后仍可查看桌面但不再重复结算，用 `UseDefaultInteraction` 并在默认互动中只打开只读 UI；可重复日常工作则用 `IgnoreCompletionProgress`。
+
+### 已落地的 Office 电脑工作日
+
+当前 Office 的电脑入口是 `Assets/Scenes/Office.unity` 中 `TV_02 (2)` 上的 `RoomInteractable`，入口 ID 为 `Office.Computer.Workday.One`，完成模式目前为 `IgnoreCompletionProgress`：工作做完后仍可以重新打开电脑查看“Workday Complete”，但不会重复完成主入口。
+
+案件配置集中放在 `Assets/SO/Office/Computer/`，当前资源是 `OfficeComputerWorkday_One.asset`。结构定义在 `Assets/Script/Office/Computer/OfficeComputerWorkdayDefinition.cs`：
+
+- 一个 `OfficeComputerWorkdayDefinition` 可以有多个 `cases`，用于后续扩展为每天 5 到 8 个事务。
+- 每个案件分别配置 Mail、Documents、Task 的稳定 `progressId`；正确提交 Task 才代表案件完成。
+- 选错决定可写入可选的 `incorrectDecisionProgressId` 的 `Open` 计数，供评分、剧情或同事关系使用，选错不会阻断再次选择。
+- 文案、决策名称、反馈和正确答案都在 SO 中配置；`OfficeComputerScreenUI.prefab` 只保留可在 Inspector 中调整的静态 UI、图标、TMP 文本和按钮引用，不在脚本里硬编码这些内容。
+
+新增 Office 电脑玩法配置时，优先在 `Assets/SO/Office/` 下建立该玩法自己的子目录；不要把 Office 的新资源混放进 CityWalk 或通用 `_Done.asset` 目录。新增案件时保持已经上线的 `progressId` 不变，并确认 UI 中预留的决策按钮数量足够。
+
+内部 UI 按钮不是 `CommandMouseInteractable`，因此不需要为了按钮再挂 Command 组件。它们可以直接调用电脑控制器的公开无参数方法；只有玩法内部存在 3D 鼠标小道具时，才使用 `CommandMouseInteractable` 和 `CommandMouseInteractionCompletionGroup`。
+
+### 玩法恢复和跨场景表现
+
+- 进入 Office 电脑 UI 后关闭、重新进入：控制器读子目标进度，恢复当前完成情况。
+- 离开 Office Scene 再回来、退出游戏后重启：同样读子目标进度恢复。
+- 其它场景对象需要对某个子目标作出反应：挂 `RoomInteractionProgressEventTrigger`，监听子目标 ID 的 `Completion`；希望重载场景后立刻还原表现时，勾选 `invokeIfAlreadySatisfiedOnEnable`。
+- 子目标之间有先后关系：场景入口使用 `RoomInteractionUnlockConditions` 检查前一个 ID 的 `Completion`；电脑 UI 的 Button 则由电脑控制器读取同一进度后设置 `Button.interactable` 和提示状态。不要在多个 UI 点击回调里各自散落不同的条件判断。
+- 需要在玩法完成后切场景：先记录所有子目标和主入口 Completion，再调用 `GameFlowManager` 的推进接口。它会复用 `SceneTransitionController` 的统一淡出、加载、淡入。
+
+### 当前存档能力边界
+
+当前 Room 进度存档只适合“计数 / 已完成标记 / 玩家继续位置”。以下状态可以直接用不同 ID 表示：
+
+- 多个独立工作是否完成。
+- 某封邮件是否已阅读、某文件是否已打开。
+- 通过次数、失败次数或收集数量。
+- 二选一结果：为每个合法结果单独准备稳定 ID，并确保一次任务只会写入一个结果。
+
+以下情况不要自行增加 `PlayerPrefs` Key：
+
+- 需要保存任意文本、动态列表、任务排序、倒计时的精确秒数。
+- 一项任务需要保存多个数值、复杂枚举或可变长度数据。
+- 需要版本迁移的数据。
+
+遇到这些情况，应先扩展 `RoomInteractionProgressManager` 的 `SaveData`，或在 `LocalSaveStore.Keys` 中新增经过命名和版本设计的专用玩法存档入口；再让玩法控制器只通过该管理器读写。这样仍然维持统一的存档路径，不能绕开它直接写 `PlayerPrefs`。
+
+### 提交前检查表
+
+1. 主入口 `RoomInteractable.progressId` 是否稳定且非空。
+2. 每个内部目标是否有唯一、稳定的 ID，并只在真实达成时记录 Completion。
+3. 打开玩法是否只增加主入口 Open，而非误记 Completion。
+4. 每个可能重复触发的完成按钮是否具有“已经完成则不再累加”的保护。
+5. 重新打开、重进 Scene、重启游戏时，UI 是否从 `RoomInteractionProgressManager` 重新恢复。
+6. 所有子目标完成后是否只触发一次外层 `CompleteFromScript()`。
+7. 需要推动其它对象时，是否优先用 `RoomInteractionProgressEventTrigger` 或 `RoomInteractionUnlockConditions`。
+8. 需要推进主剧情时，是否走 `GameFlowManager`，而不是直接 `SceneManager.LoadScene`。
+
+## 后续 AI / 开发者最小阅读规则
+
+以后用户提出“新增一个玩法，并且要保存多个互动目标”时，先阅读本节和本文件的 `RoomInteractable 职责`、`RoomInteractionProgressManager 职责` 两节即可；不需要重新全项目搜索。
+
+只有在下列情况才额外阅读源码：
+
+- 要改变全局存档格式：`RoomInteractionProgressManager.cs`、`LocalSaveStore.cs`。
+- 要改变剧情步骤或场景切换：`GameFlowManager.cs`、`GameFlowDefinition.cs`、`SceneTransitionController.cs`。
+- 玩法内部是 3D 鼠标小道具：再阅读 `CommandMouseInteractable.cs` 和 `CommandMouseInteractionCompletionGroup.cs`。
+- 玩法入口是新的 Room 通用能力：再阅读 `RoomInteractionBehaviour.cs` 和 `RoomInteractable.cs`。
 
 ## CommandMouseInteractable 职责
 

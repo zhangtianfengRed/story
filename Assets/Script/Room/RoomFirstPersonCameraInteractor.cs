@@ -47,6 +47,8 @@ public class RoomFirstPersonCameraInteractor : MonoBehaviour
     private bool previousCursorVisible;
     private bool cursorStateStored;
     private bool viewInitialized;
+    private bool interfaceInputBlocked;
+    private int suppressInputFrame = -1;
 
     private void Awake()
     {
@@ -74,7 +76,14 @@ public class RoomFirstPersonCameraInteractor : MonoBehaviour
 
     private void Update()
     {
-        UpdateCursorState();
+        if (interfaceInputBlocked || Time.frameCount == suppressInputFrame)
+        {
+            RefreshTarget(false);
+            UpdateReticleVisibility(false);
+            return;
+        }
+
+        bool cursorRelockedThisFrame = UpdateCursorState();
 
         bool cursorLocked = Cursor.lockState == CursorLockMode.Locked;
         if (cursorLocked)
@@ -84,7 +93,10 @@ public class RoomFirstPersonCameraInteractor : MonoBehaviour
 
         RefreshTarget(cursorLocked);
 
-        if (cursorLocked && CurrentTarget != null && Input.GetKeyDown(interactionKey))
+        if (cursorLocked &&
+            !cursorRelockedThisFrame &&
+            CurrentTarget != null &&
+            Input.GetKeyDown(interactionKey))
         {
             CurrentTarget.Interact(gameObject);
             RefreshTarget(true);
@@ -119,6 +131,20 @@ public class RoomFirstPersonCameraInteractor : MonoBehaviour
     public void RefreshTarget()
     {
         RefreshTarget(Cursor.lockState == CursorLockMode.Locked);
+    }
+
+    public void SetInterfaceInputBlocked(bool blocked)
+    {
+        interfaceInputBlocked = blocked;
+
+        if (blocked)
+        {
+            SetCurrentTarget(null);
+            UpdateReticleVisibility(false);
+            return;
+        }
+
+        suppressInputFrame = Time.frameCount;
     }
 
     private void ResolveReferences()
@@ -324,25 +350,28 @@ public class RoomFirstPersonCameraInteractor : MonoBehaviour
         }
     }
 
-    private void UpdateCursorState()
+    private bool UpdateCursorState()
     {
         if (Input.GetKeyDown(unlockCursorKey))
         {
             UnlockCursor();
-            return;
+            return false;
         }
 
         if (!clickGameViewToRelock ||
             Cursor.lockState == CursorLockMode.Locked ||
             !Input.GetMouseButtonDown(0))
         {
-            return;
+            return false;
         }
 
         if (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject())
         {
             LockCursor();
+            return true;
         }
+
+        return false;
     }
 
     private void StoreCursorState()
